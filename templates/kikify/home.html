@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kikify</title>
+</head>
+<body>
+    {% for song in songs %}
+        <div>
+            {% for artist in song.album.artist.all %}
+                <h2>{{ artist }}</h2>
+            {% endfor %}
+            <p>{{ song.album }}</p>
+            <p>{{ song.year_of_production }}</p>
+            <p>{{ song.name }}</p>
+            <audio controls>
+                <source src="song/{{ song.id }}" type="audio/mpeg">
+            </audio>
+        </div>
+    {% endfor %}
+
+</body>
+</html>

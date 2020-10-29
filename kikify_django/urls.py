@@ -15,7 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from kikify.views import index, getSongById
 
 urlpatterns = [
+    path('', index),
     path('admin/', admin.site.urls),
+    path('song/<int:id>/', getSongById)
 ]
