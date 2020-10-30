@@ -1,0 +1,11 @@
+.player {
+    background: whitesmoke;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.player > audio {
+    display: inline-block;
+}

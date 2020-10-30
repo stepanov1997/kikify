@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kikify</title>
+    <script src="{% static 'home.js' %}"></script>
+    <link rel="stylesheet" text='html/css' href="{% static 'home.css' %}"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+{% for song in songs %}
+    <div>
+        {% for artist in song.album.artist.all %}
+            <h2>{{ artist.name }}</h2>
+        {% endfor %}
+        <p>{{ song.album.name }}</p>
+        <p>{{ song.year_of_production }}</p>
+        <img src="picture/{{ song.album.id }}">
+        <a href="javascript:playSong({{ song.id }})">{{ song.name }}</a>
+    </div>
+{% endfor %}
+<div class="player">
+    <audio id="player" class="embed-responsive-item" controls>
+        <source id='playerSource' type="audio/mpeg">
+    </audio>
+</div>
+</body>
+</html>

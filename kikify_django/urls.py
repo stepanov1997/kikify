@@ -14,11 +14,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from kikify.views import index, getSongById
+from django.urls import include, path
+from kikify.views import index, getSongById, getPictureByAlbumId
+import debug_toolbar
+from django.conf import settings
 
 urlpatterns = [
+    path('debug/', include(debug_toolbar.urls)),
     path('', index),
     path('admin/', admin.site.urls),
-    path('song/<int:id>/', getSongById)
+    path('song/<int:id>/', getSongById),
+    path('picture/<int:id>/', getPictureByAlbumId)
 ]
