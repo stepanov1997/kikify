@@ -12,7 +12,7 @@ from kikify.models import Artist, Album, Song, File
 from django.utils import timezone
 import stagger
 from stagger.id3 import *  # contains ID3 frame types
-
+from django.core.files import File as Files
 
 def mp3gen(path):
     for root, dirs, files in os.walk(path):
@@ -60,22 +60,22 @@ def parseTag(tag):
     except ValueError:
         year = 2020
 
-    picture = None
-    try:
-        picture_file = tag.picture
-        if not picture:
-            picture_file = open('static/no-album-art.png', 'rb').read()
-        encoded_picture = base64.b64encode(picture_file)
-    except:
-        picture_file = open('static/no-album-art.png', 'rb').read()
-        encoded_picture = base64.b64encode(picture_file)
+    # picture = None
+    # try:
+    #     picture_file = tag.picture
+    #     if not picture:
+    #         picture_file = open('static/no-album-art.png', 'rb').read()
+    #     encoded_picture = base64.b64encode(picture_file)
+    # except:
+    #     picture_file = open('static/no-album-art.png', 'rb').read()
+    #     encoded_picture = base64.b64encode(picture_file)
 
     return {
         'song': song_tag,
         'album': album_tag,
         'artist': artist_tag,
         'year': year,
-        'picture': encoded_picture
+        # 'picture': encoded_picture
     }
 
 
@@ -99,37 +99,40 @@ for mp3file in mp3gen(PATH):
         artist = artists[0]
 
     # Creating album
-    files = list(File.objects.filter(bytes=parsedTag['picture']))
-    file_picture = None
-    if len(files) == 0:
-        file_picture = File(bytes=parsedTag['picture'],
-                            name=parsedTag['album'],
-                            type='album_artwork')
-        file_picture.save()
-    else:
-        file_picture = files[0]
+    # files = list(File.objects.filter(bytes=parsedTag['picture']))
+    # file_picture = None
+    # if len(files) == 0:
+    #     file_picture = File(bytes=parsedTag['picture'],
+    #                         name=parsedTag['album'],
+    #                         type='album_artwork')
+    #     file_picture.save()
+    # else:
+    #     file_picture = files[0]
 
     albums = list(Album.objects.filter(name=parsedTag['album'],
-                                       year_of_production=parsedTag['year'], artist=artist, picture=file_picture))
+                                       year_of_production=parsedTag['year'], artist=artist))
+                                       # picture=file_picture))
     album = None
     if len(albums) == 0:
         album = Album(name=parsedTag['album'],
-                      year_of_production=parsedTag['year'],
-                      picture=file_picture)
+                      year_of_production=parsedTag['year'])
+                      # picture=file_picture)
         album.save()
         album.artist.add(artist)
     else:
         album = albums[0]
-    picture = parsedTag['picture']
+        # picture = parsedTag['picture']
 
     # Creating song
-    song_in_bytes = open(file=mp3file, mode='rb').read()
-    files = list(File.objects.filter(bytes=song_in_bytes))
+    f = Files(open(mp3file, 'rb'))
+
+    files = list(File.objects.filter(file=mp3file))
     file_song = None
     if len(files) == 0:
-        file_song = File(bytes=song_in_bytes,
-                         name=parsedTag['song'],
+        file_song = File(name=parsedTag['song'],
                          type='song')
+        file_song.file = f
+        file_song.file.name=parsedTag['song']
         file_song.save()
     else:
         file_song = files[0]

@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" type="text/css" href="../../../kikify/static/home.css"/>
     <meta charset="UTF-8">
     <title>Kikify</title>
     <script src="{% static 'home.js' %}"></script>
@@ -9,20 +10,23 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
-{% for song in songs %}
-    <div>
+<div class="songs-container">
+    {% for song in songs %}
+    <div class="song-container">
         {% for artist in song.album.artist.all %}
-            <h2>{{ artist.name }}</h2>
+            <h2 class="artist-name">{{ artist.name }}</h2>
         {% endfor %}
         <p>{{ song.album.name }}</p>
         <p>{{ song.year_of_production }}</p>
-        <img src="picture/{{ song.album.id }}">
+        <img class="album-art" src="picture/{{ song.id }}" onclick="playSong({{ song.id }})" alt="No photo"><br>
         <a href="javascript:playSong({{ song.id }})">{{ song.name }}</a>
     </div>
 {% endfor %}
+</div>
+
 <div class="player">
-    <audio id="player" class="embed-responsive-item" controls>
-        <source id='playerSource' type="audio/mpeg">
+    <audio id="player" class="embed-responsive-item" controls preload="auto" autobuffer>
+        <source id='playerSource' type="audio/mp3">
     </audio>
 </div>
 </body>

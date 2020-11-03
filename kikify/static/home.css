@@ -9,3 +9,32 @@
 .player > audio {
     display: inline-block;
 }
+
+.album-art {
+    width: 200px;
+    height: 200px;
+}
+
+.songs-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.song-container {
+    max-width: 200px;
+    max-height: 400px;
+    text-align: center;
+    padding: 30px;
+    box-sizing: content-box;
+}
+
+.artist-name {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.artist-name:hover {
+    overflow: auto;
+    white-space: nowrap;
+}
