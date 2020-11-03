@@ -21,7 +21,7 @@ class Song(models.Model):
 class Album(models.Model):
     name = models.CharField(blank=False, max_length=255)
     year_of_production = models.IntegerField(blank=True)
-    # picture = models.ForeignKey('File', blank=False, on_delete=models.CASCADE)
+    picture = models.BinaryField()
     artist = models.ManyToManyField('Artist')
 
     def __unicode__(self):

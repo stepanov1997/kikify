@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from kikify.views import index, getSongById, getPictureBySongId
+from kikify.views import index, getSongById
 import debug_toolbar
 from django.conf import settings
 
@@ -23,6 +23,5 @@ urlpatterns = [
     path('debug/', include(debug_toolbar.urls)),
     path('', index),
     path('admin/', admin.site.urls),
-    path('song/<int:id>/', getSongById),
-    path('picture/<int:id>/', getPictureBySongId)
+    path('song/<int:id>/', getSongById)
 ]

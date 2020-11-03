@@ -60,22 +60,22 @@ def parseTag(tag):
     except ValueError:
         year = 2020
 
-    # picture = None
-    # try:
-    #     picture_file = tag.picture
-    #     if not picture:
-    #         picture_file = open('static/no-album-art.png', 'rb').read()
-    #     encoded_picture = base64.b64encode(picture_file)
-    # except:
-    #     picture_file = open('static/no-album-art.png', 'rb').read()
-    #     encoded_picture = base64.b64encode(picture_file)
+    picture = None
+    try:
+        picture_file = tag.picture
+        if not picture:
+            picture_file = open('static/no-album-art.png', 'rb').read()
+        encoded_picture = base64.b64encode(picture_file)
+    except:
+        picture_file = open('static/no-album-art.png', 'rb').read()
+        encoded_picture = base64.b64encode(picture_file)
 
     return {
         'song': song_tag,
         'album': album_tag,
         'artist': artist_tag,
         'year': year,
-        # 'picture': encoded_picture
+        'picture': encoded_picture
     }
 
 
@@ -98,30 +98,21 @@ for mp3file in mp3gen(PATH):
     else:
         artist = artists[0]
 
-    # Creating album
-    # files = list(File.objects.filter(bytes=parsedTag['picture']))
-    # file_picture = None
-    # if len(files) == 0:
-    #     file_picture = File(bytes=parsedTag['picture'],
-    #                         name=parsedTag['album'],
-    #                         type='album_artwork')
-    #     file_picture.save()
-    # else:
-    #     file_picture = files[0]
+    file_picture = parsedTag['picture']
 
     albums = list(Album.objects.filter(name=parsedTag['album'],
-                                       year_of_production=parsedTag['year'], artist=artist))
-                                       # picture=file_picture))
+                                       year_of_production=parsedTag['year'],
+                                       artist=artist,
+                                       picture=file_picture))
     album = None
     if len(albums) == 0:
         album = Album(name=parsedTag['album'],
-                      year_of_production=parsedTag['year'])
-                      # picture=file_picture)
+                      year_of_production=parsedTag['year'],
+                      picture=file_picture)
         album.save()
         album.artist.add(artist)
     else:
         album = albums[0]
-        # picture = parsedTag['picture']
 
     # Creating song
     f = Files(open(mp3file, 'rb'))

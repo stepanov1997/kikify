@@ -7,7 +7,11 @@ import base64
 
 
 def index(request):
-    print(Song.objects.all())
+    # def mapSongs(song):
+    #     song.album.picture = str(song.album.picture)
+    #     print(song.album.picture)
+    #     return song
+    # print(list(map(mapSongs, Song.objects.all())))
     dictionary = {
         'songs': Song.objects.all()
     }
@@ -19,15 +23,3 @@ def getSongById(request, id):
     response = RangedFileResponse(request, open(f"kikify/{song_path}", 'rb'), content_type='audio/*')
     response['Content-Disposition'] = f'attachment; filename="kikify/{song_path}"'
     return response
-
-
-def getPictureBySongId(request, id):
-    song_path = Song.objects.filter(id=id).first().song_in_bytes.file
-    picture = None
-    try:
-        picture_file = stagger.read_tag(f"kikify/{song_path}").picture
-        if not picture:
-            picture_file = open('kikify/static/no-album-art.png', 'rb').read()
-    except:
-        picture_file = open('kikify/static/no-album-art.png', 'rb').read()
-    return HttpResponse(content=picture_file, content_type='image/*')
