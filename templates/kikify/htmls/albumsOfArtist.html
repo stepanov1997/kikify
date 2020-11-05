@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kikify</title>
+    <script>
+        window.onload = function() {
+            for (let elem of document.getElementsByClassName('links')) {
+                const ids = elem.id.split(" ");
+                elem.href = `${location.protocol}//${location.host}/artist/${ids[0]}/album/${ids[1]}/songs`
+                console.log(elem.href)
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>{{ artist.name }}</h1>
+    <div class="albums-container">
+        {% for album in albums %}
+            <a id="{{ artist.id }} {{ album.id }}" class="links">
+                <h2 class="album-name">{{ album.name }}</h2>
+            </a>
+        {% endfor %}
+    </div>
+
+{% include "kikify/htmls/player.html" %}
+</body>
+</html>

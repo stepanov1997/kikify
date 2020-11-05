@@ -1,0 +1,27 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kikify</title>
+    <script src="{% static 'home.js' %}"></script>
+    <link rel="stylesheet" type='text/css' href="{% static 'home.css' %}"/>
+    <link rel="stylesheet" type='text/css' href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+<div class="songs-container">
+    {% for song in songs %}
+    <div class="song-container">
+        <h2 class="artist-name">{{ artist.name }}</h2>
+        <p>{{ album.name }}</p>
+        <p>{{ song.year_of_production }}</p>
+        <img class="album-art" src="data:image/png;base64,{{ song.album.picture |  bytesToString }}" onclick="playSong({{ song.id }})" alt="No photo"><br>
+        <a href="javascript:playSong({{ song.id }})">{{ song.name }}</a>
+    </div>
+{% endfor %}
+</div>
+
+{% include "kikify/htmls/player.html" %}
+</body>
+</html>

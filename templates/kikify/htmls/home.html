@@ -24,10 +24,6 @@
 {% endfor %}
 </div>
 
-<div class="player">
-    <audio id="player" class="embed-responsive-item" controls preload="auto" autobuffer>
-        <source id='playerSource' type="audio/mp3">
-    </audio>
-</div>
+{% include "kikify/htmls/player.html" %}
 </body>
 </html>
