@@ -1,0 +1,24 @@
+.albums-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.album-container {
+    max-width: 200px;
+    max-height: 400px;
+    text-align: center;
+    padding: 30px;
+    box-sizing: content-box;
+}
+
+.album-name {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.album-name:hover {
+    overflow: auto;
+    white-space: nowrap;
+}

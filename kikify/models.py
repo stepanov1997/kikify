@@ -1,11 +1,23 @@
 from django.db import models
+from django.contrib.auth.models import User
 import time
+
+
+class UserProfileInfo(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    picture = models.ImageField(upload_to='media/profile_pictures/')
+
+    def __unicode__(self):
+        return self.user.username
 
 
 class File(models.Model):
     name = models.CharField(blank=False, max_length=255)
     type = models.CharField(blank=False, max_length=100)
     file = models.FileField(upload_to='media/songs/%Y/%m/%d/', max_length=255)
+
+    def __unicode__(self):
+        return self.file.path
 
 
 class Song(models.Model):

@@ -1,0 +1,12 @@
+<!-- Sidebar -->
+<div class="bg-light border-right" id="sidebar-wrapper">
+    <div class="sidebar-heading">KIKIFY</div>
+    <div class="list-group list-group-flush">
+        <a href="javascript:back()" class="list-group-item list-group-item-action bg-light">Back</a>
+        <div class="py-3"></div>
+        <a href="javascript:openArtists('{% url 'artists' %}')" class="list-group-item list-group-item-action bg-light">Artists</a>
+        <a href="javascript:openAlbums('{% url 'albums' %}')" class="list-group-item list-group-item-action bg-light">Albums</a>
+        <a href="javascript:openSongs('{% url 'songs' %}')" class="list-group-item list-group-item-action bg-light">Songs</a>
+    </div>
+</div>
+

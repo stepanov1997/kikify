@@ -1,0 +1,20 @@
+.player {
+    background: whitesmoke;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+.player > div p {
+    width: 100%;
+    text-align: center;
+    align-content: center;
+}
+.player > audio {
+    width: 50%;
+    align-content: center;
+}

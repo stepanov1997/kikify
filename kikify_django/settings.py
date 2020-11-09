@@ -35,7 +35,10 @@ ALLOWED_HOSTS = [
     '*'
 ]
 
+
+
 # Application definition
+
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
@@ -62,6 +65,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'kikify_django.urls'
+APPEND_SLASH=False
+LOGIN_URL = '/kikify/login'
 
 TEMPLATES = [
     {

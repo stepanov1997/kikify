@@ -1,0 +1,37 @@
+.content {
+    box-sizing: content-box;
+}
+
+.album-art {
+    width: 150px;
+    height: 150px;
+}
+
+.songs-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.song-container {
+    max-width: 150px;
+    max-height: 350px;
+    text-align: center;
+    padding: 30px;
+    box-sizing: content-box;
+}
+
+.artist-name {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.artist-name:hover {
+    overflow: auto;
+    white-space: nowrap;
+}
+
+#page-content-wrapper {
+    margin-bottom: 150px !important;
+}

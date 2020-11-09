@@ -1,0 +1,29 @@
+.artist-art {
+    width: 100px;
+    height: 100px;
+}
+
+.artists-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.artist-container {
+    max-width: 200px;
+    max-height: 400px;
+    text-align: center;
+    padding: 30px;
+    box-sizing: content-box;
+}
+
+.artist-name {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.artist-name:hover {
+    overflow: auto;
+    white-space: nowrap;
+}
