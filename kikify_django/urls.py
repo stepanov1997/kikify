@@ -21,6 +21,7 @@ import debug_toolbar
 from django.conf import settings
 
 urlpatterns = [
+    path('', home),
     path('admin/', admin.site.urls),
     path('kikify/', include('kikify.urls')),
 ]

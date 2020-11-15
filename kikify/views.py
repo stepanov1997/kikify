@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Song, Album, Artist
+from .models import Song, Album, Artist, UserProfileInfo, ResetingPasswordQueue
+from django.contrib.auth.models import User
 from ranged_fileresponse import RangedFileResponse
 import stagger
 import base64
@@ -10,6 +11,15 @@ from kikify.forms import UserForm, UserProfileInfoForm
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import smtplib
+import traceback
+import secrets
+
+MY_ADDRESS = 'XXXXXXXXXXXXXXX'
+PASSWORD = 'XXXXXXXXXXXXX'
+SITE_ROOT = 'http://localhost:8000/kikify/'
 
 
 def register_user(request):
@@ -63,8 +73,9 @@ def login_user(request):
                 return HttpResponse("ACCOUNT NOT ACTIVE")
         else:
             print("Someone tried to login and failed!")
-            print(f"Username: {username} and password {password}")
-            return HttpResponse("Invalid login details supplied")
+            return render(request, 'kikify/htmls/login.html', {
+                'username': username
+            })
     else:
         return render(request, 'kikify/htmls/login.html', {})
 
@@ -75,9 +86,106 @@ def logout_user(request):
     return HttpResponseRedirect(reverse('home'))
 
 
+def reset_password(request):
+    if request.method == 'POST':
+        email = request.POST.get("email")
+
+        userProfileInfos = UserProfileInfo.objects.filter(user__email=email)
+        if len(userProfileInfos) > 0:
+            try:
+                # set up the SMTP server
+                s = smtplib.SMTP(host='smtp.gmail.com', port=587)
+                s.starttls()
+                s.login(MY_ADDRESS, PASSWORD)
+
+                msg = MIMEMultipart()
+
+                token = secrets.token_urlsafe(16)
+
+                user = User.objects.filter(email=email).first()
+                rpq = ResetingPasswordQueue(email=email, user=user, token=token)
+                rpq.save()
+
+                # setup the parameters of the message
+                msg['From'] = MY_ADDRESS
+                msg['To'] = email
+                msg['Subject'] = "Kikify - reset password"
+                html = f"""\
+                <html>
+                  <body>
+                    <p>Hi, {user.username}<br>
+                       Someone requested reseting password for this mail.<br><br>
+                       If you did it, press link below: 
+                       <a href="{SITE_ROOT}change_password?token={token}">Link for reseting password</a><br>
+                       Otherwise ignore this email.
+                    </p>
+                    <p>
+                       Kikify admin.
+                    </p>
+                  </body>
+                </html>
+                """
+                mime = MIMEText(html, "html")
+                # add in the message body
+                msg.attach(mime)
+
+                # send the message via the server set up earlier.
+                s.sendmail(
+                    MY_ADDRESS, email, msg.as_string()
+                )
+                del msg
+
+                # Terminate the SMTP session and close the connection
+                s.quit()
+            except Exception:
+                print(traceback.format_exc())
+                return render(request, 'kikify/htmls/reset_password.html', {
+                    'email_exists': False,
+                    'successful': False,
+                    'message': "Email is unsuccessfully sent."
+                })
+            return render(request, 'kikify/htmls/reset_password.html', {
+                'email_exists': True,
+                'successful': True,
+                'message': "Email is successfully sent."
+            })
+        else:
+            return render(request, 'kikify/htmls/reset_password.html', {
+                'email_exists': False,
+                'successful': False,
+                'message': "Email is unsuccessfully sent."
+            })
+    else:
+        return render(request, 'kikify/htmls/reset_password.html', {})
+
+
+def change_password(request):
+    token = request.GET.get("token")
+    obs = ResetingPasswordQueue.objects.filter(token=token)
+    if len(obs) > 0:
+        user = obs.first().user
+        user.set_password("riki")
+        user.save()
+        obs.delete()
+        return HttpResponse(content="{\'status\':\'Ok\'}", content_type="application/json")
+    else:
+        return HttpResponse(content="{\'status\':\'Not ok\'}", content_type="application/json")
+
+
 @login_required
 def home(request):
-    return render(request, 'kikify/htmls/home.html')
+    user_profile_info = UserProfileInfo.objects.filter(user__username=request.user.username).first()
+    print(user_profile_info)
+    picture_path = user_profile_info.picture.path
+    picture = None
+    with open(picture_path, 'rb') as f:
+        picture = f.read()
+    context = {
+        'user_image': str(base64.b64encode(picture), 'utf-8'),
+        'username': user_profile_info.user.username,
+        'about': "About"
+    }
+    return render(request, 'kikify/htmls/home.html', context)
 
 
 @login_required

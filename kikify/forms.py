@@ -4,7 +4,9 @@ from kikify.models import UserProfileInfo
 
 
 class UserForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput())
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    email = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = User
@@ -12,7 +14,7 @@ class UserForm(forms.ModelForm):
 
 
 class UserProfileInfoForm(forms.ModelForm):
-    picture = forms.ImageField(required=False)
+    picture = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = UserProfileInfo

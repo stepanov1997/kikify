@@ -2,10 +2,21 @@ let states = []
 let songs = []
 
 const loadPage = async (url) => {
-    $("#menu-toggle").click(function (e) {
+    window.onload = function() {
+        document.getElementById("menu-toggle").addEventListener("click",  function(e){
         e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
+        wrapper = document.getElementById("wrapper").classList;
+        if(wrapper.contains("toggled"))
+            wrapper.remove("toggled")
+        else
+            wrapper.add("toggled")
     });
+    }
+
+    // $("#menu-toggle").click(function (e) {
+    //     e.preventDefault();
+    //     $("#wrapper").toggleClass("toggled");
+    // });
     await openArtists(url)
 }
 

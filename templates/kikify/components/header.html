@@ -1,12 +1,46 @@
-<!-- Sidebar -->
-<div class="bg-light border-right" id="sidebar-wrapper">
-    <div class="sidebar-heading">KIKIFY</div>
-    <div class="list-group list-group-flush">
-        <a href="javascript:back()" class="list-group-item list-group-item-action bg-light">Back</a>
-        <div class="py-3"></div>
-        <a href="javascript:openArtists('{% url 'artists' %}')" class="list-group-item list-group-item-action bg-light">Artists</a>
-        <a href="javascript:openAlbums('{% url 'albums' %}')" class="list-group-item list-group-item-action bg-light">Albums</a>
-        <a href="javascript:openSongs('{% url 'songs' %}')" class="list-group-item list-group-item-action bg-light">Songs</a>
-    </div>
+<div>
+    <nav class="hd navbar navbar-expand-lg navbar-light bg-light border-bottom">
+        <button class="not-mobile btn border-dark" id="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="px-2"></div>
+        <h2>KIKIFY</h2>
+        <button class="hamburger navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="list navbar-nav ml-auto mt-2 mt-lg-0">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#"><i class="fas fa-home"></i> Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="mobile nav-item">
+                    <a href="javascript:openArtists('{% url 'artists' %}')" class="nav-link">Artists</a>
+                </li>
+                <li class="mobile nav-item">
+                    <a href="javascript:openAlbums('{% url 'albums' %}')" class="nav-link">Albums</a>
+                </li>
+                <li class="mobile nav-item">
+                    <a href="javascript:openSongs('{% url 'songs' %}')" class="nav-link">Songs</a>
+                </li>
+                <li class="nav-item dropdown px-2">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-user-cog"></i> Preferences
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#"><i class="fas fa-key"></i> Change password</a>
+                        <a class="dropdown-item" href="#"><i class="fas fa-address-card"></i> Edit profile</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                </li>
+                <li class="nav-item px-2">
+                    <a class="nav-link" href="{% url 'logout_user' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 </div>
 

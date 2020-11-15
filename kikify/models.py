@@ -3,6 +3,12 @@ from django.contrib.auth.models import User
 import time
 
 
+class ResetingPasswordQueue(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    email = models.EmailField()
+    token = models.CharField(max_length=255)
+
+
 class UserProfileInfo(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     picture = models.ImageField(upload_to='media/profile_pictures/')
