@@ -17,8 +17,8 @@ import smtplib
 import traceback
 import secrets
 
-MY_ADDRESS = 'XXXXXXXXXXXXXXX'
-PASSWORD = 'XXXXXXXXXXXXX'
+MY_ADDRESS = 'xxxxxxxxxxxxxxxxxxx'
+PASSWORD = 'xxxxxxxxxxxxxxxxx'
 SITE_ROOT = 'http://localhost:8000/kikify/'
 
 
@@ -140,36 +140,63 @@ def reset_password(request):
             except Exception:
                 print(traceback.format_exc())
                 return render(request, 'kikify/htmls/reset_password.html', {
+                    'GET': False,
                     'email_exists': False,
                     'successful': False,
                     'message': "Email is unsuccessfully sent."
                 })
             return render(request, 'kikify/htmls/reset_password.html', {
+                'GET': False,
                 'email_exists': True,
                 'successful': True,
                 'message': "Email is successfully sent."
             })
         else:
             return render(request, 'kikify/htmls/reset_password.html', {
+                'GET': False,
                 'email_exists': False,
                 'successful': False,
                 'message': "Email is unsuccessfully sent."
             })
     else:
-        return render(request, 'kikify/htmls/reset_password.html', {})
+        return render(request, 'kikify/htmls/reset_password.html', {'GET': True})
 
 
 def change_password(request):
-    token = request.GET.get("token")
-    obs = ResetingPasswordQueue.objects.filter(token=token)
-    if len(obs) > 0:
-        user = obs.first().user
-        user.set_password("riki")
-        user.save()
-        obs.delete()
-        return HttpResponse(content="{\'status\':\'Ok\'}", content_type="application/json")
+    # Otvaranje linka iz mejla
+    if request.method == 'GET':
+        token = request.GET.get("token")
+        if token and len(token) > 0:
+            obs = ResetingPasswordQueue.objects.filter(token=token)
+            if len(obs) > 0:
+                return render(request, 'kikify/htmls/change_password.html', {'token': token})
+            else:
+                return HttpResponseRedirect(reverse('reset_password'))
+        else:
+            return HttpResponseRedirect(reverse('reset_password'))
     else:
-        return HttpResponse(content="{\'status\':\'Not ok\'}", content_type="application/json")
+        token = request.POST.get("token")
+        password = request.POST.get("password")
+        password_again = request.POST.get("password_again")
+
+        if token and len(token) > 0:
+            obs = ResetingPasswordQueue.objects.filter(token=token)
+            if len(obs) > 0:
+                if password != password_again:
+                    return render(request, 'kikify/htmls/change_password.html', {
+                        'successful': False,
+                        'message': "Passwords don't match each other."
+                    })
+                user = obs.first().user
+                user.set_password(password)
+                user.save()
+                obs.delete()
+                return render(request, 'kikify/htmls/login.html', {
+                    'successful': True,
+                    'message': 'You successfully changed password. <br>You can log in with new password.'
+                })
+        else:
+            return HttpResponseRedirect(reverse('reset_password'))
 
 
 @login_required
