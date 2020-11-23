@@ -17,8 +17,8 @@ import smtplib
 import traceback
 import secrets
 
-MY_ADDRESS = 'xxxxxxxxxxxxxxxxxxx'
-PASSWORD = 'xxxxxxxxxxxxxxxxx'
+MY_ADDRESS = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+PASSWORD = 'XXXXXXXXXXXXXXXXX'
 SITE_ROOT = 'http://localhost:8000/kikify/'
 
 

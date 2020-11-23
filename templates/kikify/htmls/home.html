@@ -5,6 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Kikify</title>
+    <script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>
     {% include "kikify/htmls/imports.html" %}
     <script>
         loadPage("{% url 'artists' %}")

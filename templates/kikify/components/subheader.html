@@ -1,41 +1,42 @@
-<div>
-    <nav class="hd navbar navbar-expand-lg navbar-light bg-light border-bottom">
-        <button class="hamburger navbar-toggler" type="button" data-toggle="collapse"
-                data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <i class="fas fa-bars"></i>
-        </button>
-        <div>
-            <a href="javascript:back()" class="list-group-item list-group-item-action bg-light w-100"><i
-                class="fas fa-arrow-circle-left"></i> Back</a>
-        </div>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="list navbar-nav ml-auto mt-2 mt-lg-0">
-                <li class="nav-item dropdown ml-auto" style="width: initial">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-sort-amount-down-alt"></i> Sort by
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#"><i class="fas fa-text-height"></i> Title</a>
-                        <a class="dropdown-item" href="#"><i class="fas fa-compact-disc"></i> Album</a>
-                        <a class="dropdown-item" href="#"><i class="fas fa-user-alt"></i> Artist</a>
-                        <a class="dropdown-item" href="#"><i class="fas fa-sort-numeric-down"></i> Year</a>
-                    </div>
-                </li>
-                <div class="px-2"></div>
+{% block subheader %}
+    <div>
+        <nav class="hd navbar navbar-expand-lg navbar-light bg-light border-bottom">
+            <button class="hamburger navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div>
+                <a href="javascript:back()" class="list-group-item list-group-item-action bg-light w-100"><i
+                        class="fas fa-arrow-circle-left"></i> Back</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="list navbar-nav ml-auto mt-2 mt-lg-0">
+                    <li class="nav-item dropdown ml-auto" style="width: initial">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-sort-amount-down-alt"></i> Sort by
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#"><i class="fas fa-text-height"></i> Title</a>
+                            <a class="dropdown-item" href="#"><i class="fas fa-compact-disc"></i> Album</a>
+                            <a class="dropdown-item" href="#"><i class="fas fa-user-alt"></i> Artist</a>
+                            <a class="dropdown-item" href="#"><i class="fas fa-sort-numeric-down"></i> Year</a>
+                        </div>
+                    </li>
+                    <div class="px-2"></div>
 
-                <div class="input-group mr-auto md-form form-sm form-2 pl-0" style="width: initial">
-                    <input class="form-control my-0 py-1 lime-border" type="text" placeholder="Search"
-                           aria-label="Search">
-                    <div class="input-group-append ">
+                    <div class="input-group mr-auto md-form form-sm form-2 pl-0" style="width: initial">
+                        <input class="form-control my-0 py-1 lime-border" type="text" placeholder="Search"
+                               aria-label="Search">
+                        <div class="input-group-append ">
                         <span class="input-group-text blue lighten-2 btn btn-gray" id="basic-text1">
                             <i class="fas fa-search text-grey" aria-hidden="true"></i>
                         </span>
+                        </div>
                     </div>
-                </div>
-            </ul>
-        </div>
-    </nav>
-</div>
-
+                </ul>
+            </div>
+        </nav>
+    </div>
+{% endblock %}

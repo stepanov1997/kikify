@@ -1,28 +1,30 @@
-{% load custom_filters %}
-<div>
-    {% if artist %}
-        <h1>{{ artist.name }}</h1><br>
-    {% endif %}
-    <div class="albums-container">
-        {% for album in albums %}
-            <div class="album-container">
-                {% if not artist %}
-                    <h6>{{ album.artist.first.name }}</h6>
-                    <img class="album-art"
-                         src="data:image/png;base64,{{ album.picture |  bytesToString }}"
-                         onclick="openAlbum(`{% url 'songsOfAlbum' album.artist.first.id album.id %}`,{{ album.artist.first.id }},{{ album.id }})"
-                         alt="No photo"><br>
-                    <h4 onclick="openAlbum(`{% url 'songsOfAlbum' album.artist.first.id album.id %}`,{{ album.artist.first.id }},{{ album.id }})"
-                        class="album-name">{{ album.name }}</h4>
-                {% else %}
-                    <img class="album-art"
-                         src="data:image/png;base64,{{ album.picture |  bytesToString }}"
-                         onclick="openAlbum(`{% url 'songsOfAlbum' album.artist.first.id album.id %}`,{{ album.artist.first.id }},{{ album.id }})"
-                         alt="No photo"><br>
-                    <h4 onclick="openAlbum(`{% url 'songsOfAlbum' artist.id album.id %}`,{{ artist.id }},{{ album.id }})"
-                        class="album-name">{{ album.name }}</h4>
-                {% endif %}
-            </div>
-        {% endfor %}
+{% block albums %}
+    {% load custom_filters %}
+    <div>
+        {% if artist %}
+            <h1>{{ artist.name }}</h1><br>
+        {% endif %}
+        <div class="albums-container">
+            {% for album in albums %}
+                <div class="album-container">
+                    {% if not artist %}
+                        <h6 onclick="openArtist(`{% url 'albumsOfArtist' album.artist.first.id %}`, {{ album.artist.first.id }})">{{ album.artist.first.name }}</h6>
+                        <img class="album-art"
+                             src="data:image/png;base64,{{ album.picture |  bytesToString }}"
+                             onclick="openAlbum(`{% url 'songsOfAlbum' album.artist.first.id album.id %}`,{{ album.artist.first.id }},{{ album.id }})"
+                             alt="No photo"><br>
+                        <h4 onclick="openAlbum(`{% url 'songsOfAlbum' album.artist.first.id album.id %}`,{{ album.artist.first.id }},{{ album.id }})"
+                            class="album-name">{{ album.name }}</h4>
+                    {% else %}
+                        <img class="album-art"
+                             src="data:image/png;base64,{{ album.picture |  bytesToString }}"
+                             onclick="openAlbum(`{% url 'songsOfAlbum' album.artist.first.id album.id %}`,{{ album.artist.first.id }},{{ album.id }})"
+                             alt="No photo"><br>
+                        <h4 onclick="openAlbum(`{% url 'songsOfAlbum' artist.id album.id %}`,{{ artist.id }},{{ album.id }})"
+                            class="album-name">{{ album.name }}</h4>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
     </div>
-</div>
+{% endblock %}

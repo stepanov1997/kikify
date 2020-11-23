@@ -1,8 +1,37 @@
-<div id="song-info" style="display: flex; flex-direction: row">
+{% load static %}
+{% block player %}
+    <div class="audio-player">
+        <div class="timeline">
+            <div class="progress"></div>
+        </div>
+        <div class="time">
+            <div class="current"></div>
+            <div class="divider">/</div>
+            <div class="length"></div>
+        </div>
+        <div class="controls-wrapper">
+            <div class="controls-box">
+                <img id="prev-img" class="control-item" src="{% static "icons/prev.svg" %}" alt="Previous">
+                <div class="controls-box">
+                    <img id="back-img" class="control-item-small" src="{% static "icons/back.svg" %}" alt="Back">
+                    <img id="play-img" class="control-item toggle-play play" src="{% static "icons/play.svg" %}"
+                         alt="Play">
+                    <img id="forward-img" class="control-item-small" src="{% static "icons/forward.svg" %}" alt="Previous">
+                </div>
+                <img id="next-img" class="control-item" src="{% static "icons/next.svg" %}" alt="Next">
+            </div>
+        </div>
+        <div class="volume-container">
+            <div class="volume-button">
+                <div class="volume icono-volumeMedium"></div>
+            </div>
 
-</div>
-<div>
-    <audio id="player" class="embed-responsive-item" controls preload="auto" autobuffer>
-        <source id='playerSource' type="audio/mp3">
-    </audio>
-</div>
+            <div class="volume-slider">
+                <div class="volume-percentage"></div>
+            </div>
+        </div>
+        <div id="song-info" style="display: flex; flex-direction: row;text-align: center; width: 100%">
+
+        </div>
+    </div>
+{% endblock %}

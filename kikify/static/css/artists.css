@@ -1,6 +1,7 @@
 .artist-art {
     width: 100px;
     height: 100px;
+    cursor: pointer;
 }
 
 .artists-container {
@@ -24,6 +25,7 @@
 }
 
 .artist-name:hover {
+    cursor: pointer;
     overflow: auto;
     white-space: nowrap;
 }

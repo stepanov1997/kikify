@@ -3,6 +3,7 @@
 }
 
 .album-art {
+    cursor: pointer;
     width: 150px;
     height: 150px;
 }
@@ -33,7 +34,7 @@
 }
 
 #page-content-wrapper {
-    margin-bottom: 150px !important;
+    margin-bottom: 200px !important;
 }
 
 

@@ -1,11 +1,15 @@
-{% load static %}
-<div id='container' class="artists-container">
-    {% for artist in artists %}
-        <div class="artist-container">
-            <img class="artist-art" src="{% static "artist-512.png" %}" alt="">
-            <p class="artist-name" onclick="openArtist(`{% url 'albumsOfArtist' artist.id %}`, {{ artist.id }})">{{ artist.name }}</p>
-        </div>
-    {% endfor %}
-</div>
+{% block albums %}
+    {% load static %}
+    <div id='container' class="artists-container">
+        {% for artist in artists %}
+            <div class="artist-container">
+                <img class="artist-art" src="{% static "artist-512.png" %}"
+                     onclick="openArtist(`{% url 'albumsOfArtist' artist.id %}`, {{ artist.id }})" alt="">
+                <p class="artist-name"
+                   onclick="openArtist(`{% url 'albumsOfArtist' artist.id %}`, {{ artist.id }})">{{ artist.name }}</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
 
 
