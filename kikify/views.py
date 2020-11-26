@@ -17,8 +17,8 @@ import smtplib
 import traceback
 import secrets
 
-MY_ADDRESS = 'kristijan.stepanov@student.etf.unibl.org'
-PASSWORD = 'cikakiki1997'
+MY_ADDRESS = 'XXXXXXXXXXXXXXXXXXXXXXXXXx'
+PASSWORD = 'XXXXXXXXXXXXX'
 SITE_ROOT = 'http://localhost:8000/kikify/'
 
 
@@ -203,12 +203,15 @@ def change_password(request):
 def home(request):
     user_profile_info = UserProfileInfo.objects.filter(user__username=request.user.username).first()
     print(user_profile_info)
-    picture_path = user_profile_info.picture.path
+    picture_path = None if not user_profile_info.picture else user_profile_info.picture.path
     picture = None
-    with open(picture_path, 'rb') as f:
-        picture = f.read()
+    try:
+        with open(picture_path, 'rb') as f:
+            picture = f.read()
+    except:
+        pass
     context = {
-        'user_image': str(base64.b64encode(picture), 'utf-8'),
+        'user_image': None if not picture else str(base64.b64encode(picture), 'utf-8'),
         'username': user_profile_info.user.username,
         'about': "About"
     }

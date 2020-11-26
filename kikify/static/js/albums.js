@@ -6,6 +6,7 @@ async function openAlbums(url) {
     // set state
     states.push({
         url: url,
+        unit: "album",
         command: async () => await openAlbums(url)
     })
 }
@@ -18,6 +19,7 @@ async function openAlbum(url, artistId, albumId) {
     // set state
     states.push({
         url: url,
+        unit: "song",
         command: async () => await openAlbum(url, artistId, albumId)
     })
 }

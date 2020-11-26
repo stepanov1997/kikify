@@ -23,6 +23,7 @@
                         <h4 onclick="openAlbum(`{% url 'songsOfAlbum' artist.id album.id %}`,{{ artist.id }},{{ album.id }})"
                             class="album-name">{{ album.name }}</h4>
                     {% endif %}
+                    <a class="albumJSON" hidden>{"id":"{{ album.id }}","name":"{{ album.name }}","artist":"{{ album.artist.name }}", "year":"{{ album.year_of_production }}"}</a>
                 </div>
             {% endfor %}
         </div>

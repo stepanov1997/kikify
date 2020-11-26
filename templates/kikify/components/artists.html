@@ -7,6 +7,7 @@
                      onclick="openArtist(`{% url 'albumsOfArtist' artist.id %}`, {{ artist.id }})" alt="">
                 <p class="artist-name"
                    onclick="openArtist(`{% url 'albumsOfArtist' artist.id %}`, {{ artist.id }})">{{ artist.name }}</p>
+                <a class="artistJSON" hidden>{"id":"{{ artist.id }}","name":"{{ artist.name }}"}</a>
             </div>
         {% endfor %}
     </div>

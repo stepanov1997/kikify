@@ -10,7 +10,7 @@
                      src="data:image/png;base64,{{ song.album.picture |  bytesToString }}"
                      onclick="playSong(`{% url 'getSongById' song.id %}`, `{{ song.name }}`, `{{ song.album.name }}`, `{{ song.album.artist.first.name }}`, true)"
                      alt="No photo"><br>
-                <a class="songURL" hidden>{"id":"{{ song.id }}", "url":"{% url "getSongById" song.id %}","name":"{{ song.name }}","album":"{{ song.album.name }}","artist":"{{ song.album.artist.first.name }}"}</a>
+                <a class="songJSON" hidden>{"id":"{{ song.id }}", "url":"{% url "getSongById" song.id %}","name":"{{ song.name }}","album":"{{ song.album.name }}","artist":"{{ song.album.artist.first.name }}", "year":"{{ song.year_of_production }}"}</a>
                 <a href="javascript:playSong(`{% url 'getSongById' song.id %}`, `{{ song.name }}`, `{{ song.album.name }})`, `{{ song.album.artist.first.name }}`, true)">{{ song.name }}</a>
             </div>
         {% endfor %}

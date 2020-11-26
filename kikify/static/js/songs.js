@@ -1,11 +1,11 @@
 async function openSongs(url) {
     const songsResponse = await fetch(url)
-    const songsHtml = await songsResponse.text()
-    document.getElementsByClassName("content")[0].innerHTML = songsHtml
+    document.getElementsByClassName("content")[0].innerHTML = await songsResponse.text()
 
     // set state
     states.push({
         url: url,
+        unit: 'song',
         command: async () => await openSongs(url)
     })
 }

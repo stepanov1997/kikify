@@ -52,7 +52,7 @@ const createPlaylistFromSongs = (currentSongUrl, shuffle = false) => {
             }
         }
     })
-    const songsURLs = document.getElementsByClassName("songURL");
+    const songsURLs = document.getElementsByClassName("songJSON");
     let temp = Array.from(songsURLs).map(elem => JSON.parse(elem.innerHTML));
     if (shuffle) {
         temp = temp.sort(() => .5 - Math.random());
@@ -179,6 +179,8 @@ $(document).ready(function () {
 
     const nextBtn = document.getElementById("next-img").onclick = async function () {
         await playNextSong();
+        // document.getElementById(currentPlayList[0].id).setAttribute('tabindex', '-1')
+        // document.getElementById(currentPlayList[0].id).focus()
     }
 
     let intervalo = undefined;

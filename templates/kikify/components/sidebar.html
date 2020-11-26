@@ -9,9 +9,11 @@
                      alt="Card image cap">
                 <div class="card-body little-profile text-center">
                     <div class="pro-img">
-                        <img class="album-art"
-                             src="data:image/jpg;base64,{{ user_image }}"
-                             alt="No photo"><br>
+                        {% if user_image %}
+                            <img class="album-art"
+                                 src="data:image/jpg;base64,{{ user_image }}"
+                                 alt="No photo"><br>
+                        {% endif %}
                         <h3 class="m-b-0">{{ username }}</h3>
                         <p>{{ about }}</p>
                         <a href="javascript:void(0)"
