@@ -5,14 +5,13 @@ os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
 import django
 import base64
-
+from mutagen.easyid3 import EasyID3
+from mutagen.mp3 import Open
 django.setup()
 
 from kikify.models import Artist, Album, Song, File
-from django.utils import timezone
-import stagger
-from stagger.id3 import *  # contains ID3 frame types
 from django.core.files import File as Files
+
 
 def mp3gen(path):
     for root, dirs, files in os.walk(path):
@@ -21,7 +20,63 @@ def mp3gen(path):
                 yield os.path.join(root, filename)
 
 
-PATH = 'C:\\Users\\Kristijan\\Desktop\\Muzika'
+PATH = 'C:\\Users\\Kristijan\\Desktop\\Muzika\\Kemal Monteno'
+
+
+def parseTag2(tags, path):
+    """
+    Parse tag from mp3 file
+    :param tags: mp3 tag
+    :return: Dictionary of parsed elements (song, album, artist, year, picture)
+    """
+    file_name = path.split("\\")[-1]
+    artist_tag = None
+    try:
+        artist_tag = tags["artist"][0]
+        if not artist_tag:
+            artist_tag = file_name.split("-")[0]
+    except:
+        artist_tag = 'Unknown artist'
+
+    album_tag = None
+    try:
+        album_tag = tags["album"][0]
+        if not album_tag:
+            album_tag = 'Unknown album'
+    except:
+        album_tag = 'Unknown album'
+
+    song_tag = None
+    try:
+        song_tag = tags["title"][0]
+        if not song_tag:
+            song_tag = file_name.split("-")[-1]
+    except:
+        song_tag = file_name
+
+    year = None
+    try:
+        year = int(tags["date"][0].split(sep='-')[0])
+    except:
+        year = 2020
+
+    picture_file = None
+    try:
+        picture_file = extract_picture(path)
+        if not picture_file:
+            picture_file = open('static/no-album-art.png', 'rb').read()
+        encoded_picture = base64.b64encode(picture_file)
+    except:
+        picture_file = open('static/no-album-art.png', 'rb').read()
+        encoded_picture = base64.b64encode(picture_file)
+
+    return {
+        'song': song_tag,
+        'album': album_tag,
+        'artist': artist_tag,
+        'year': year,
+        'picture': encoded_picture
+    }
 
 
 def parseTag(tag):
@@ -79,16 +134,34 @@ def parseTag(tag):
     }
 
 
+def extract_picture(mp3):
+    try:
+        tags = Open(mp3)
+    except Exception as e:
+        print(e)
+    data = ""
+    for i in tags:
+        if i.startswith("APIC"):
+            data = tags[i].data
+            break
+    if not data:
+        return None
+    return data
+
+
 for mp3file in mp3gen(PATH):
 
     tag = None
     try:
-        tag = stagger.read_tag(mp3file)
+        # tag = stagger.read_tag(mp3file)
+        tag = EasyID3(mp3file)
     except:
         continue
     if not tag: continue
 
-    parsedTag = parseTag(tag=tag)
+    # parsedTag = parseTag(tag=tag)
+
+    parsedTag = parseTag2(tags=tag, path=mp3file)
 
     # Creating artist
     artists = list(Artist.objects.filter(name=parsedTag['artist']))
@@ -123,7 +196,8 @@ for mp3file in mp3gen(PATH):
         file_song = File(name=parsedTag['song'],
                          type='song')
         file_song.file = f
-        file_song.file.name=parsedTag['song']
+        file_song.file.name = mp3file.split("\\")[-1]
+        print(parsedTag['song'])
         file_song.save()
     else:
         file_song = files[0]

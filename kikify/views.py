@@ -17,8 +17,8 @@ import smtplib
 import traceback
 import secrets
 
-MY_ADDRESS = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-PASSWORD = 'XXXXXXXXXXXXXXXXX'
+MY_ADDRESS = 'kristijan.stepanov@student.etf.unibl.org'
+PASSWORD = 'cikakiki1997'
 SITE_ROOT = 'http://localhost:8000/kikify/'
 
 

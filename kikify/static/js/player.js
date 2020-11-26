@@ -3,11 +3,17 @@ let currentPlayList = [];
 const audio = new Audio();
 
 function changeMusicSongAlbumArt(url) {
-    const songsURLs = document.getElementsByClassName("songURL");
-    let temp = Array.from(songsURLs).map(elem => JSON.parse(elem.innerHTML));
-    id = temp.find(p => p.url = url).id;
-    song_div = document.getElementById(id)
-    song_div.getElementsByTagName("img")[0].src='/C:/static/icons/song.svg'
+    currentPlayList.forEach(elem => {
+        if (elem.album_art) {
+            let song_div = document.getElementById(elem.id)
+            if (song_div.getElementsByTagName("img")[0].src !== elem.album_art) {
+                song_div.getElementsByTagName("img")[0].src = elem.album_art;
+            }
+        }
+    })
+    let song_div = document.getElementById(currentPlayList[0].id)
+    currentPlayList[0].album_art = song_div.getElementsByTagName("img")[0].src
+    song_div.getElementsByTagName("img")[0].src = '/C:/static/icons/song.svg'
 }
 
 const playSong = async (url, name, album, artist, isClick) => {
@@ -38,6 +44,14 @@ const playSong = async (url, name, album, artist, isClick) => {
 }
 
 const createPlaylistFromSongs = (currentSongUrl, shuffle = false) => {
+    currentPlayList.forEach(elem => {
+        if (elem.album_art) {
+            let song_div = document.getElementById(elem.id)
+            if (song_div.getElementsByTagName("img")[0].src !== elem.album_art) {
+                song_div.getElementsByTagName("img")[0].src = elem.album_art;
+            }
+        }
+    })
     const songsURLs = document.getElementsByClassName("songURL");
     let temp = Array.from(songsURLs).map(elem => JSON.parse(elem.innerHTML));
     if (shuffle) {
@@ -56,6 +70,17 @@ const createPlaylistFromSongs = (currentSongUrl, shuffle = false) => {
         }
     }
     currentPlayList = temp2
+}
+
+async function playNextSong() {
+    if (currentPlayList.length !== 0) {
+        shifted = currentPlayList.shift()
+        if (currentPlayList.length !== 0) {
+            currentPlayList.push(shifted)
+            nextSong = currentPlayList[0]
+            await playSong(nextSong.url, nextSong.name, nextSong.album, nextSong.artist, false)
+        }
+    }
 }
 
 $(document).ready(function () {
@@ -116,7 +141,7 @@ $(document).ready(function () {
         audioPlayer.querySelector(".time .length").textContent = ""
     }
 //check audio percentage and update time accordingly
-    setInterval(() => {
+    setInterval(async () => {
         if (audio.src !== "") {
             const progressBar = audioPlayer.querySelector(".progress");
             progressBar.style.width = audio.currentTime / audio.duration * 100 + "%";
@@ -125,6 +150,7 @@ $(document).ready(function () {
             );
             if (progressBar.style.width === "100%") {
                 playBtn.setAttribute('src', '/C:/static/icons/play.svg')
+                await playNextSong()
             }
         }
     }, 500);
@@ -151,15 +177,8 @@ $(document).ready(function () {
         false
     );
 
-    const nextBtn = document.getElementById("next-img").onclick = async function() {
-        if (currentPlayList.length !== 0) {
-            shifted = currentPlayList.shift()
-            if (currentPlayList.length !== 0) {
-                currentPlayList.push(shifted)
-                nextSong = currentPlayList[0]
-                await playSong(nextSong.url, nextSong.name, nextSong.album, nextSong.artist, false)
-            }
-        }
+    const nextBtn = document.getElementById("next-img").onclick = async function () {
+        await playNextSong();
     }
 
     let intervalo = undefined;

@@ -4,7 +4,7 @@
         {% for song in songs %}
             <div id="{{ song.id }}" class="song-container">
                 <h5 class="artist-name">{{ song.album.artist.first.name }}</h5>
-                <p>{{ album.name }}</p>
+                <p>{{ song.album.name }}</p>
                 <p>{{ song.year_of_production }}</p>
                 <img class="album-art"
                      src="data:image/png;base64,{{ song.album.picture |  bytesToString }}"
