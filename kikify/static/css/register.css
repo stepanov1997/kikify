@@ -31,3 +31,14 @@
     z-index: 2;
     position: relative;
 }
+
+.flex-two-rows {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.flex-two-col div {
+    flex: 0 50%;
+}

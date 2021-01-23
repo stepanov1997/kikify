@@ -2221,7 +2221,7 @@
 .m-l-auto {margin-left: auto;}
 .m-r-auto {margin-right: auto;}
 
-
+.max-w-200 { max-width: 200px}
 
 /*[ TEXT ]
 ///////////////////////////////////////////////////////////
@@ -2983,7 +2983,9 @@
 	bottom: 0px;
 }
 
+.grid {
 
+}
 
 
 

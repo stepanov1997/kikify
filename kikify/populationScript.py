@@ -9,7 +9,7 @@ from mutagen.easyid3 import EasyID3
 from mutagen.mp3 import Open
 django.setup()
 
-from kikify.models import Artist, Album, Song, File
+from kikify.models import *
 from django.core.files import File as Files
 
 
@@ -20,7 +20,7 @@ def mp3gen(path):
                 yield os.path.join(root, filename)
 
 
-PATH = 'C:\\Users\\Kristijan\\Desktop\\Muzika\\Kemal Monteno'
+PATH = 'C:\\Users\\stepa\\Desktop\\Desktop (HP)\\Muzika'
 
 
 def parseTag2(tags, path):

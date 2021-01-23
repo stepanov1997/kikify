@@ -3,9 +3,12 @@
     <div class="songs-container">
         {% for song in songs %}
             <div id="{{ song.id }}" class="song-container">
-                <h5 class="artist-name">{{ song.album.artist.first.name }}</h5>
-                <p>{{ song.album.name }}</p>
-                <p>{{ song.year_of_production }}</p>
+                <h5 class="artist-name" onclick="openArtist(`{% url 'albumsOfArtist' song.album.artist.first.id %}`, {{ song.album.artist.first.id }})">
+                    {{ song.album.artist.first.name }}
+                </h5>
+                <p class="album-name" onclick="openAlbum(`{% url 'songsOfAlbum' song.album.artist.first.id song.album.id %}`,{{ song.album.artist.first.id }},{{ song.album.id }})">
+                    {{ song.album.name }} ({{ song.year_of_production }})
+                </p>
                 <img class="album-art"
                      src="data:image/png;base64,{{ song.album.picture |  bytesToString }}"
                      onclick="playSong(`{% url 'getSongById' song.id %}`, `{{ song.name }}`, `{{ song.album.name }}`, `{{ song.album.artist.first.name }}`, true)"

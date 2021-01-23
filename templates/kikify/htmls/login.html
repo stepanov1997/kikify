@@ -13,7 +13,7 @@
 
 <div class="limiter">
     <div class="container-login100">
-        <div class="wrap-login100 p-t-85 p-b-20">
+        <div class="wrap-login100 p-t-45 p-b-20">
             <form class="login100-form validate-form" method="post" action="{% url 'login_user' %}">
                 {% csrf_token %}
                 <span class="login100-form-title p-b-60">
@@ -29,7 +29,8 @@
 					</span>
 
                 <div class="wrap-input100 validate-input m-t-65 m-b-30" data-validate="Enter username">
-                    <input class="input100 {% if username %}has-val{% endif %}" type="text" name="username" value="{% if username %}{{ username }}{% endif %}">
+                    <input class="input100 {% if username %}has-val{% endif %}" type="text" name="username"
+                           value="{% if username %}{{ username }}{% endif %}">
                     <span id="usernameSpan" class="focus-input100" data-placeholder="Username"></span>
                 </div>
 
@@ -44,23 +45,26 @@
                     </button>
                 </div>
 
-                {% if username %}
-                    <div class="m-b-8 login-more p-t-60 text-center">
-                        <span class="txt1" style="color:red">
-                            Wrong username or password.
-                        </span>
-                    </div>
-                {% endif %}
-
                 {% if successful %}
-                    <div class="m-b-8 login-more p-t-60 text-center">
+                    <div class="m-b-8 login-more p-t-30 p-b-30 text-center">
                         <span class="txt1" style="color:green">
                             {{ message }}
                         </span>
                     </div>
+                {% else %}
+                    <div class="m-b-8 login-more p-t-30 p-b-30 text-center">
+                        <span class="txt1" style="color:red">
+                            {% if message %}
+                                {{ message }}
+                            {% else %}
+                                Wrong username or password.
+                            {% endif %}
+                        </span>
+                    </div>
                 {% endif %}
 
-                <ul class="login-more p-t-100">
+
+                <ul class="login-more">
                     <li class="m-b-8">
 							<span class="txt1 fs-18">
 								Forgot

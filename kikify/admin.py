@@ -14,7 +14,7 @@ class AlbumAdmin(admin.ModelAdmin):
 
 @admin.register(Artist)
 class ArtistAdmin(admin.ModelAdmin):
-    list_display = ("name", "album")
+    list_display = ("user", "album")
 
 
 @admin.register(UserProfileInfo)

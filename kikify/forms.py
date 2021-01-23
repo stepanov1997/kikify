@@ -15,6 +15,8 @@ class UserForm(forms.ModelForm):
 
 class UserProfileInfoForm(forms.ModelForm):
     picture = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class': 'form-control'}))
+    CHOICES = (('Classic', 'Classic'), ('Artist', 'Artist'),)
+    user_type = forms.ChoiceField(choices=CHOICES, required=False)
 
     class Meta:
         model = UserProfileInfo
