@@ -8,14 +8,14 @@
     <script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>
     {% include "kikify/htmls/imports.html" %}
     <script>
-        loadPage("{% url 'artists' %}")
+        loadPage("{% url 'artists' %}", {% if isUser %}true{% else %}false{% endif %})
     </script>
 
 </head>
 <body>
 
 <div class="header">
-    {% include "kikify/components/header.html" %}
+    {% include "kikify/components/header.html" with type=type %}
 </div>
 
 <div class="d-flex" id="wrapper">
@@ -28,7 +28,7 @@
     <!-- Page Content -->
     <div id="page-content-wrapper">
         <div class="header">
-            {% include "kikify/components/subheader.html" %}
+            {% include "kikify/components/subheader.html" with isUser=isUser %}
         </div>
         <div class="content">
         </div>
@@ -36,7 +36,7 @@
     </div>
 
     <div class="player border-top border-dark">
-        {% include "kikify/components/player.html" %}
+        {% include "kikify/components/player.html" with isUser=isUser %}
     </div>
 
 </div>

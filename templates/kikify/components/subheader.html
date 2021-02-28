@@ -1,5 +1,5 @@
 {% block subheader %}
-    <div>
+    <div class="poput-form">
         <nav class="hd navbar navbar-expand-lg navbar-light bg-light border-bottom">
             <button class="hamburger navbar-toggler" type="button" data-toggle="collapse"
                     data-target="#navbarSupportedContent"
@@ -10,39 +10,160 @@
                 <a href="javascript:back()" class="list-group-item list-group-item-action bg-light w-100"><i
                         class="fas fa-arrow-circle-left"></i> Back</a>
             </div>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="list navbar-nav ml-auto mt-2 mt-lg-0">
-                    <li class="nav-item dropdown ml-auto" style="width: initial">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-sort-amount-down-alt"></i> Sort by
-                        </a>
-                        <div id="sort_a" class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="javascript:sortSongs('title')"><i
-                                    class="fas fa-text-height"></i> Title</a>
-                            <a class="dropdown-item" href="javascript:sortSongs('album')"><i
-                                    class="fas fa-compact-disc"></i> Album</a>
-                            <a class="dropdown-item" href="javascript:sortSongs('artist')"><i
-                                    class="fas fa-user-alt"></i> Artist</a>
-                            <a class="dropdown-item" href="javascript:sortSongs('year')"><i
-                                    class="fas fa-sort-numeric-down"></i> Year</a>
-                        </div>
-                    </li>
-                    <div class="px-2"></div>
+            {% if isUser %}
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="list navbar-nav ml-auto mt-2 mt-lg-0">
+                        <li class="nav-item dropdown ml-auto" style="width: initial">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-sort-amount-down-alt"></i> Sort by
+                            </a>
+                            <div id="sort_a" class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="javascript:sortSongs('title')"><i
+                                        class="fas fa-text-height"></i> Title</a>
+                                <a class="dropdown-item" href="javascript:sortSongs('album')"><i
+                                        class="fas fa-compact-disc"></i> Album</a>
+                                <a class="dropdown-item" href="javascript:sortSongs('artist')"><i
+                                        class="fas fa-user-alt"></i> Artist</a>
+                                <a class="dropdown-item" href="javascript:sortSongs('year')"><i
+                                        class="fas fa-sort-numeric-down"></i> Year</a>
+                            </div>
+                        </li>
+                        <div class="px-2"></div>
 
-                    <div class="input-group mr-auto md-form form-sm form-2 pl-0" style="width: initial">
-                        <input id="searchBar" class="form-control my-0 py-1 lime-border" type="text"
-                               onkeyup="search_input(event)" placeholder="Search"
-                               aria-label="Search">
-                        <div class="input-group-append ">
+                        <div class="input-group mr-auto md-form form-sm form-2 pl-0" style="width: initial">
+                            <input id="searchBar" class="form-control my-0 py-1 lime-border" type="text"
+                                   onkeyup="search_input(event)" placeholder="Search"
+                                   aria-label="Search">
+                            <div class="input-group-append ">
                         <span class="input-group-text blue lighten-2 btn btn-gray" id="searchButton"
                               onclick="search(event)">
                             <i class="fas fa-search text-grey" aria-hidden="true"></i>
                         </span>
+                            </div>
+                        </div>
+                    </ul>
+                </div>
+            {% else %}
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="list navbar-nav ml-auto mt-2 mt-lg-0">
+                        <li class="nav-item dropdown ml-auto" style="width: initial">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-cloud-upload-alt"></i> Upload new...
+                            </a>
+                            <div id="sort_a" class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item open-button" href="javascript:openForm()"><i
+                                        class="fas fa-music"></i> Song</a>
+                                <a class="dropdown-item" href="javascript:sortSongs('album')"><i
+                                        class="fas fa-record-vinyl"></i> Album</a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown ml-auto" style="width: initial">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-sort-amount-down-alt"></i> Sort by
+                            </a>
+                            <div id="sort_a" class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="javascript:sortSongs('title')"><i
+                                        class="fas fa-text-height"></i> Title</a>
+                                <a class="dropdown-item" href="javascript:sortSongs('album')"><i
+                                        class="fas fa-compact-disc"></i> Album</a>
+                                <a class="dropdown-item" href="javascript:sortSongs('artist')"><i
+                                        class="fas fa-user-alt"></i> Artist</a>
+                                <a class="dropdown-item" href="javascript:sortSongs('year')"><i
+                                        class="fas fa-sort-numeric-down"></i> Year</a>
+                            </div>
+                        </li>
+                        <div class="px-2"></div>
+
+                        <div class="input-group mr-auto md-form form-sm form-2 pl-0" style="width: initial">
+                            <input id="searchBar" class="form-control my-0 py-1 lime-border" type="text"
+                                   onkeyup="search_input(event)" placeholder="Search"
+                                   aria-label="Search">
+                            <div class="input-group-append ">
+                                <span class="input-group-text blue lighten-2 btn btn-gray" id="searchButton"
+                                      onclick="search(event)">
+                                    <i class="fas fa-search text-grey" aria-hidden="true"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </ul>
+                </div>
+            {% endif %}
+        </nav>
+        {% if not isUser %}
+            <div class="form-popup" id="myForm">
+            <form onsubmit="return uploadFile(event, '{% url "upload_song" %}')" class="form-container text-center" enctype="multipart/form-data">
+                <h4 class="title">Upload song</h4>
+
+                <div class="row py-0 flex-c text-center justify-content-center">
+                    <div class="w-50">
+                        <!-- Upload image input-->
+                        <div class="input-group mb-3 px-2 py-0 rounded-pill bg-white shadow-sm"
+                             style="justify-content: center">
+                            <input id="upload" type="file" name="profile_image" onchange="readSong(event, '{% url 'get_music_info' %}')"
+                                   class="form-control border-0" style="display: none" hidden>
+                            <label id="upload-label" for="upload" class="font-weight-light text-muted"
+                                   style="display: none"></label>
+                            <div class="input-group-append">
+                                <label for="upload" class="btn btn-light m-0 rounded-pill px-4"> <i
+                                        class="fa fa-cloud-upload mr-2 text-muted"></i><small
+                                        class="text-uppercase font-weight-bold text-muted"> Song </small></label>
+                            </div>
+                        </div>
+
+                        <!-- Uploaded image area-->
+                        <div class="image-area mt-1">
+                            <img id="imageResult" src="#" alt=""
+                                 class="img-fluid rounded shadow-sm mx-auto d-block w-30">
                         </div>
                     </div>
-                </ul>
-            </div>
-        </nav>
+                </div>
+
+                <div>
+                    <label for="uploadedSong">
+                        <h4 id="filename"></h4>
+                    </label>
+                    <audio id="uploadedSong" hidden controls>
+                        <source id="sourceUploadedSong" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+
+                </div>
+
+                <label for="psw"><b>Title: </b></label>
+                <input id="title" type="text" placeholder="Enter title" name="title" required>
+
+                <label for="psw"><b>Album: </b></label><br>
+                <input id="album" type="text" placeholder="Enter album" name="psw" required>
+
+                <label for="psw"><b>Artist: </b></label><br>
+                <input id="artist" type="text" placeholder="Enter artist" name="psw" required>
+
+                <label for="psw"><b>Year: </b></label>
+                <input id="year" type="number" placeholder="Enter year" name="psw" required>
+
+                <div class="row py-0 flex-c text-center justify-content-center">
+                    <div class="w-50">
+                        <!-- Upload image input-->
+                        <div class="input-group mb-3 px-2 py-0 rounded-pill bg-white shadow-sm"
+                             style="justify-content: center">
+                            <input id="upload-art" type="file" name="profile_image" onchange="readURLAlbumArt(event);"
+                                   class="form-control border-0" style="display: none">
+                            <div class="input-group-append">
+                                <label for="upload-art" class="btn btn-light m-0 rounded-pill px-4"> <i
+                                        class="fa fa-cloud-upload mr-2 text-muted"></i><small
+                                        class="text-uppercase font-weight-bold text-muted"> Album art </small></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn" style="background-color: #4CAF50;">Upload song</button>
+                <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+            </form>
+        </div>
+        {% endif %}
     </div>
 {% endblock %}

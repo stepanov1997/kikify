@@ -13,7 +13,7 @@ function changeMusicSongAlbumArt(url) {
     })
     let song_div = document.getElementById(currentPlayList[0].id)
     currentPlayList[0].album_art = song_div.getElementsByTagName("img")[0].src
-    song_div.getElementsByTagName("img")[0].src = '/static/icons/song.svg'
+    song_div.getElementsByTagName("img")[0].src = '/C:/static/icons/song.svg'
 }
 
 const playSong = async (url, name, album, artist, isClick) => {
@@ -164,7 +164,7 @@ $(document).ready(function () {
                 if (audio.paused) {
                     playBtn.classList.remove("play");
                     playBtn.classList.add("pause");
-                    playBtn.setAttribute('src', '/static/icons/pause.svg')
+                    playBtn.setAttribute('src', '/C:/static/icons/pause.svg')
                     audio.play();
                 } else {
                     playBtn.classList.remove("pause");

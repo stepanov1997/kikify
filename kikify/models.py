@@ -9,15 +9,8 @@ class ResetingPasswordQueue(models.Model):
     token = models.CharField(max_length=255)
 
 
-class UserType(models.TextChoices):
-    ADMIN = "Admin"
-    ARTIST = "Artist"
-    CLASSIC = "Classic"
-
-
 class UserProfileInfo(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    user_type = models.CharField(max_length=10, choices=UserType.choices, default=UserType.CLASSIC)
     picture = models.ImageField(upload_to='kikify/media/profile_pictures/')
 
     def __unicode__(self):
@@ -48,6 +41,7 @@ class Album(models.Model):
     year_of_production = models.IntegerField(blank=True)
     picture = models.BinaryField()
     artist = models.ManyToManyField('Artist')
+    record_label = models.ManyToManyField('RecordLabel')
 
     def __unicode__(self):
         return self.name
@@ -55,7 +49,15 @@ class Album(models.Model):
 
 class Artist(models.Model):
     name = models.CharField(blank=False, max_length=255)
-    user = models.OneToOneField(UserProfileInfo, on_delete=models.CASCADE, null=True, blank=True)
+
+    def __unicode__(self):
+        return self.name
+
+
+class RecordLabel(models.Model):
+    name = models.CharField(blank=False, max_length=255)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    picture = models.ImageField(upload_to='kikify/media/profile_pictures/')
 
     def __unicode__(self):
         return self.name

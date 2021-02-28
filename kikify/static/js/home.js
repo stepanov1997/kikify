@@ -1,7 +1,7 @@
 let states = []
 let songs = []
 
-const loadPage = async (url) => {
+const loadPage = async (url, isUser) => {
     window.onload = function () {
         document.getElementById("menu-toggle").addEventListener("click", function (e) {
             e.preventDefault();
@@ -17,7 +17,12 @@ const loadPage = async (url) => {
     //     e.preventDefault();
     //     $("#wrapper").toggleClass("toggled");
     // });
-    await openArtists(url)
+    if(isUser){
+         await openArtists(url)
+    }else{
+
+    }
+
 }
 
 function sortSongs(key) {

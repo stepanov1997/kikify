@@ -7,23 +7,22 @@
 
 @font-face {
   font-family: Poppins-Regular;
-  /static/images/avatar-01.jpg
-  src: url('/static/fonts/poppins/Poppins-Regular.ttf');
+  src: url('../fonts/poppins/Poppins-Regular.ttf');
 }
 
 @font-face {
   font-family: Poppins-Medium;
-  src: url('/kikify/static/static/fonts/poppins/Poppins-Medium.ttf');
+  src: url('../fonts/poppins/Poppins-Medium.ttf');
 }
 
 @font-face {
   font-family: Poppins-Bold;
-  src: url('/kikify/static/static/fonts/poppins/Poppins-Bold.ttf');
+  src: url('../fonts/poppins/Poppins-Bold.ttf');
 }
 
 @font-face {
   font-family: Poppins-SemiBold;
-  src: url('/kikify/static/static/fonts/poppins/Poppins-SemiBold.ttf');
+  src: url('../fonts/poppins/Poppins-SemiBold.ttf');
 }
 
 

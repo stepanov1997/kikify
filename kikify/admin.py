@@ -1,5 +1,5 @@
 from django.contrib import admin
-from kikify.models import Song, Album, Artist, UserProfileInfo
+from kikify.models import Song, Album, Artist, UserProfileInfo, RecordLabel
 
 
 @admin.register(Song)
@@ -14,7 +14,11 @@ class AlbumAdmin(admin.ModelAdmin):
 
 @admin.register(Artist)
 class ArtistAdmin(admin.ModelAdmin):
-    list_display = ("user", "album")
+    pass
+
+@admin.register(RecordLabel)
+class RecordLabelAdmin(admin.ModelAdmin):
+    pass
 
 
 @admin.register(UserProfileInfo)

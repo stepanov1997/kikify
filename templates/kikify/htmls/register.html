@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>KIKIFY - login</title>
+    <title>KIKIFY - register</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% include 'kikify/htmls/imports_login.html' %}
@@ -18,10 +18,10 @@
         <div class="wrap-login100 p-t-65 p-b-5 w-75">
 
             <span class="login100-form-title p-b-40">
-			    {% if isArtist %}
-                    Artist registration
-                {% else %}
+			    {% if isUser %}
                     User registration
+                {% else %}
+                    Record label registration
                 {% endif %}
 		    </span>
 
@@ -33,7 +33,10 @@
 		        KIKIFY
 		    </span>
 
-            <form class="login100-form validate-form flex-col" method="post" enctype="multipart/form-data" action="{% url 'register_user' %}"
+            <form class="login100-form validate-form flex-col" method="post" enctype="multipart/form-data"
+                    {% if isUser %} action="{% url 'register_user' %}"
+                    {% else %} action="{% url 'register_record_label' %}"
+                    {% endif %}
                   enctype="multipart/form-data">
                 {% csrf_token %}
 
@@ -66,11 +69,11 @@
                 </div>
 
                 <div class="flex-column p-30">
-                    {% if isArtist %}
+                    {% if isUser %}
                         <div class="wrap-input100 validate-input m-b-45" data-validate="Select user type:">
                             <select class="input100" name="user_type">
                                 <option value="Classic">Classic</option>
-                                <option value="Artist">Artist</option>
+                                <option value="Record label">Record label</option>
                             </select>
                             <span id="passwordSpan" class="focus-input100"
                                   data-placeholder="Select user type:"></span>
@@ -81,25 +84,25 @@
                 <div class="row py-0 flex-c ">
                     <div class="w-50">
                         <!-- Upload image input-->
-                    <div class="input-group mb-3 px-2 py-0 rounded-pill bg-white shadow-sm"
-                         style="justify-content: center">
-                        <input id="upload" type="file" name="profile_image" onchange="readURL(this);"
-                               class="form-control border-0" style="display: none">
-                        <label id="upload-label" for="upload" class="font-weight-light text-muted"
-                               style="display: none"></label>
-                        <div class="input-group-append">
-                            <label for="upload" class="btn btn-light m-0 rounded-pill px-4"> <i
-                                    class="fa fa-cloud-upload mr-2 text-muted"></i><small
-                                    class="text-uppercase font-weight-bold text-muted">Choose profile
-                                picture</small></label>
+                        <div class="input-group mb-3 px-2 py-0 rounded-pill bg-white shadow-sm"
+                             style="justify-content: center">
+                            <input id="upload" type="file" name="profile_image" onchange="readURL(this);"
+                                   class="form-control border-0" style="display: none">
+                            <label id="upload-label" for="upload" class="font-weight-light text-muted"
+                                   style="display: none"></label>
+                            <div class="input-group-append">
+                                <label for="upload" class="btn btn-light m-0 rounded-pill px-4"> <i
+                                        class="fa fa-cloud-upload mr-2 text-muted"></i><small
+                                        class="text-uppercase font-weight-bold text-muted">Choose profile
+                                    picture</small></label>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Uploaded image area-->
-                    <div class="image-area mt-1">
-                        <img id="imageResult" src="#" alt=""
-                             class="img-fluid rounded shadow-sm mx-auto d-block w-30">
-                    </div>
+                        <!-- Uploaded image area-->
+                        <div class="image-area mt-1">
+                            <img id="imageResult" src="#" alt=""
+                                 class="img-fluid rounded shadow-sm mx-auto d-block w-30">
+                        </div>
                     </div>
 
                 </div>
@@ -108,7 +111,7 @@
                         Register
                     </button>
                 </div>
-                {% if not successful %}
+                {% if not post_request and not successful %}
                     <div class="m-b-8 login-more p-t-20 text-center">
                         <span class="txt1" style="color:red">
                             Wrong username or password.

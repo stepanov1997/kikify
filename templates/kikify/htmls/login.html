@@ -48,21 +48,24 @@
                 {% if successful %}
                     <div class="m-b-8 login-more p-t-30 p-b-30 text-center">
                         <span class="txt1" style="color:green">
-                            {{ message }}
+                            {% if post_request %}
+                                {{ message }}
+                            {% endif %}
                         </span>
                     </div>
                 {% else %}
                     <div class="m-b-8 login-more p-t-30 p-b-30 text-center">
                         <span class="txt1" style="color:red">
-                            {% if message %}
-                                {{ message }}
-                            {% else %}
-                                Wrong username or password.
+                            {% if post_request %}
+                                {% if message %}
+                                    {{ message }}
+                                {% else %}
+                                    Wrong username or password.
+                                {% endif %}
                             {% endif %}
                         </span>
                     </div>
                 {% endif %}
-
 
                 <ul class="login-more">
                     <li class="m-b-8">
@@ -80,7 +83,7 @@
 								Don’t have an account?
 							</span>
 
-                        <a href="{% url 'register_user' %}" class="txt2">
+                        <a href="{% url 'register_menu' %}" class="txt2">
                             Sign up
                         </a>
                     </li>

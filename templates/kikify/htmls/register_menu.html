@@ -36,11 +36,11 @@
                 </div>
             </form>
 
-            <form class="login100-form validate-form p-t-20" method="post" action="{% url 'register_artist' %}">
+            <form class="login100-form validate-form p-t-20" method="post" action="{% url 'register_record_label' %}">
                 <div class="container-login100-form-btn">
                     {% csrf_token %}
                     <button class="login100-form-btn">
-                        <i class="fas fa-guitar p-r-15"></i> Register artist account
+                        <i class="fas fa-guitar p-r-15"></i> Register record label account
                     </button>
                 </div>
             </form>

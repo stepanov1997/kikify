@@ -57,6 +57,9 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -141,7 +144,7 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_L10N = True
-
+0
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)

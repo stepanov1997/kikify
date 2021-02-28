@@ -1,5 +1,6 @@
 {% load static %}
 {% block player %}
+    {% if isUser %}
     <div class="audio-player">
         <div class="timeline">
             <div class="progress"></div>
@@ -34,4 +35,6 @@
 
         </div>
     </div>
+    {% else %}
+    {% endif %}
 {% endblock %}

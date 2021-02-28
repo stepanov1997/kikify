@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>KIKIFY - login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% include 'kikify/htmls/imports_login.html' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
+    <script src="{% static 'js/login.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/register.css' %}">
+    <script src="{% static 'js/register.js' %}"></script>
+</head>
+<body>
+<div class="container-login100">
+    <div class="wrap-login100 p-t-0 p-b-30">
+        <div class="limiter">
+            <span class="login100-form-title p-b-40">
+                Select type of user that do you want to login.
+			</span>
+
+            <span class="login100-form-avatar">
+			    <img src="{% static 'favicon.svg' %}" alt="AVATAR">
+			</span>
+
+            <span class="login100-form-title p-t-20 p-b-20">
+				KIKIFY
+			</span>
+
+            <form class="login100-form validate-form p-t-50" method="post" action="{% url 'choose_type' %}">
+                {% csrf_token %}
+                <div class="container-login100-form-btn">
+                    <input name="type" hidden value="USER">
+                    <button class="login100-form-btn">
+                        <i class="fas fa-user p-r-15"></i> User account
+                    </button>
+                </div>
+            </form>
+
+            <form class="login100-form validate-form p-t-20" method="post" action="{% url 'choose_type' %}">
+                <div class="container-login100-form-btn">
+                    {% csrf_token %}
+                    <input name="type" hidden value="RECORD_LABEL">
+                    <button class="login100-form-btn">
+                        <i class="fas fa-guitar p-r-15"></i> Record label account
+                    </button>
+                </div>
+            </form>
+
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

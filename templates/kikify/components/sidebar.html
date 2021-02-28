@@ -1,3 +1,4 @@
+{% load static %}
 {% block sidebar %}
     {% load custom_filters %}
     <div class="bg-light border-right" id="sidebar-wrapper">
@@ -13,8 +14,18 @@
                             <img class="album-art"
                                  src="data:image/jpg;base64,{{ user_image }}"
                                  alt="No photo"><br>
+                        {% else %}
+                            <img class="album-art"
+                                 src="{% static "user.png" %}"
+                                 alt="No photo"><br>
                         {% endif %}
-                        <h3 class="m-b-0">{{ username }}</h3>
+
+                        {% if isUser %}
+                            <h3 class="m-b-0">{{ username }}</h3>
+                        {% else %}
+                            <h2 class="m-b-0">{{ name }}</h2>
+                            <h3 class="m-b-0">({{ username }})</h3>
+                        {% endif %}
                         <p>{{ about }}</p>
                         <a href="javascript:void(0)"
                            class="m-t-10 waves-effect waves-dark btn btn-primary btn-md btn-rounded"
