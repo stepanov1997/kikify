@@ -1,7 +1,10 @@
 import base64
+import os
 
 from kikify.models import Artist, Album, File, Song
 from django.core.files import File as Files
+
+from kikify_django import settings
 
 
 def upload_song(infos):
@@ -16,7 +19,7 @@ def upload_song(infos):
     else:
         artist = artists[0]
 
-    file_picture = base64.b64decode(infos['upload_art'])
+    file_picture = bytearray(infos['upload_art'], 'utf8')
 
     albums = list(Album.objects.filter(name=infos['album'],
                                        year_of_production=infos['year'],

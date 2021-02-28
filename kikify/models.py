@@ -1,6 +1,10 @@
+import os
+
 from django.db import models
 from django.contrib.auth.models import User
 import time
+
+from kikify_django import settings
 
 
 class ResetingPasswordQueue(models.Model):
@@ -11,7 +15,7 @@ class ResetingPasswordQueue(models.Model):
 
 class UserProfileInfo(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    picture = models.ImageField(upload_to='kikify/media/profile_pictures/')
+    picture = models.ImageField(upload_to='profile_pictures/')
 
     def __unicode__(self):
         return self.user.username
@@ -20,7 +24,7 @@ class UserProfileInfo(models.Model):
 class File(models.Model):
     name = models.CharField(blank=False, max_length=255)
     type = models.CharField(blank=False, max_length=100)
-    file = models.FileField(upload_to='kikify/media/songs/%Y/%m/%d/', max_length=255)
+    file = models.FileField(upload_to='songs/%Y/%m/%d/', max_length=255)
 
     def __unicode__(self):
         return self.file.path
@@ -57,7 +61,7 @@ class Artist(models.Model):
 class RecordLabel(models.Model):
     name = models.CharField(blank=False, max_length=255)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
-    picture = models.ImageField(upload_to='kikify/media/profile_pictures/')
+    picture = models.ImageField(upload_to='profile_pictures/')
 
     def __unicode__(self):
         return self.name

@@ -19,6 +19,7 @@ from ranged_fileresponse import RangedFileResponse
 from requests import Response
 
 from kikify.forms import UserForm, UserProfileInfoForm
+from kikify_django import settings
 from . import song_service
 from .models import Song, Album, RecordLabel, UserProfileInfo, ResetingPasswordQueue, Artist
 from .mp3_parser import parse_tags
@@ -515,7 +516,7 @@ def upload_song(request):
 @login_required
 def getSongById(request, song_id):
     song_path = Song.objects.filter(id=song_id).first().song_in_bytes.file
-    file_name = os.path.abspath(f"{os.path.dirname(__file__)}/{song_path}")
+    file_name = str(os.path.join(str(settings.MEDIA_ROOT), str(song_path)))
     logging.warning("File path: " + file_name)
     response = RangedFileResponse(request, open(file_name, 'rb'), content_type='audio/*')
     response['Content-Disposition'] = f'attachment; filename="{os.path.basename(file_name)}"'

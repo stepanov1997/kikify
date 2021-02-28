@@ -12,6 +12,13 @@ django.setup()
 from kikify.models import *
 from django.core.files import File as Files
 
+print(settings.MEDIA_ROOT)
+
+files = list(File.objects.all())
+for file in files:
+    file.file.name = file.file.name[13:]
+    file.save()
+
 
 def mp3gen(path):
     for root, dirs, files in os.walk(path):
