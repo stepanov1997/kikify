@@ -1,9 +1,11 @@
 import base64
+import io
 import json
 import os
 import secrets
 import smtplib
 import traceback
+import zipfile
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import logging
@@ -11,6 +13,7 @@ import logging
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db import transaction
 from django.http import HttpResponseRedirect, FileResponse, HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -23,6 +26,7 @@ from kikify_django import settings
 from . import song_service
 from .models import Song, Album, RecordLabel, UserProfileInfo, ResetingPasswordQueue, Artist
 from .mp3_parser import parse_tags
+from zipfile import ZipFile
 
 MY_ADDRESS = 'kristijan.stepanov@student.etf.unibl.org'
 PASSWORD = 'cikakiki1997'
@@ -110,6 +114,7 @@ def register_record_label(request):
         profile_form = UserProfileInfoForm()
 
     context = {'user_form': user_form,
+               'successful': False,
                'profile_form': profile_form,
                'registered': registered,
                'isUser': False,
@@ -432,45 +437,103 @@ def home(request):
 
 @login_required
 def artists(request):
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+    isRecordLabel = bool(body['isRecordLabel'])
+
+    artists_list = Artist.objects.all()
+    if isRecordLabel:
+        artists_list = Artist.objects.filter(album__record_label__user__id=request.user.id)
+    else:
+        artists_list = Artist.objects.all()
+
     dictionary = {
-        'artists': Artist.objects.all()
+        'artists': artists_list,
+        'isUser': not isRecordLabel
     }
     return render(request, 'kikify/components/artists.html', dictionary)
 
 
 @login_required
 def albums(request):
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+    isRecordLabel = bool(body['isRecordLabel'])
+
+    if isRecordLabel:
+        albums_list = Album.objects.filter(record_label__user__id=request.user.id)
+    else:
+        albums_list = Album.objects.all()
+
     dictionary = {
-        'albums': Album.objects.all()
+        'albums': albums_list,
+        'isUser': not isRecordLabel
     }
     return render(request, 'kikify/components/albums.html', dictionary)
 
 
 @login_required
 def songs(request):
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+    isRecordLabel = bool(body['isRecordLabel'])
+
+    if isRecordLabel:
+        song_list = Song.objects.filter(album__record_label__user__id=request.user.id)
+    else:
+        song_list = Song.objects.all()
+
     dictionary = {
-        'songs': Song.objects.all()
+        'songs': song_list,
+        'isUser': not isRecordLabel
     }
+
     return render(request, 'kikify/components/songs.html', dictionary)
 
 
 @login_required
 def albumsOfArtist(request, artist_id):
-    dictionary = {
-        'albums': Album.objects.filter(artist__id=artist_id),
-        'RecordLabel': RecordLabel.objects.filter(id=artist_id).first()
-    }
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+    isRecordLabel = bool(body['isRecordLabel'])
+
+    if isRecordLabel:
+        dictionary = {
+            'albums': Album.objects.filter(artist__id=artist_id, record_label__user__id=request.user.id),
+            'RecordLabel': RecordLabel.objects.filter(id=artist_id).first(),
+            'isUser': not isRecordLabel
+        }
+    else:
+        dictionary = {
+            'albums': Album.objects.filter(artist__id=artist_id),
+            'RecordLabel': RecordLabel.objects.filter(id=artist_id).first(),
+            'isUser': not isRecordLabel
+        }
+
     return render(request, 'kikify/components/albums.html', dictionary)
 
 
 @login_required
 def songsOfAlbum(request, artist_id, album_id):
-    dictionary = {
-        'songs': Song.objects.filter(album__id=album_id),
-        'RecordLabel': RecordLabel.objects.filter(id=artist_id),
-        'album': Album.objects.filter(id=album_id)
-    }
-    print(dictionary)
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+    isRecordLabel = bool(body['isRecordLabel'])
+
+    if isRecordLabel:
+        dictionary = {
+            'songs': Song.objects.filter(album__id=album_id, album__record_label__user=request.user),
+            'RecordLabel': RecordLabel.objects.filter(id=artist_id),
+            'album': Album.objects.filter(id=album_id, record_label__user=request.user),
+            'isUser': not isRecordLabel
+        }
+    else:
+        dictionary = {
+            'songs': Song.objects.filter(album__id=album_id),
+            'RecordLabel': RecordLabel.objects.filter(id=artist_id),
+            'album': Album.objects.filter(id=album_id),
+            'isUser': not isRecordLabel
+        }
+
     return render(request, 'kikify/components/songs.html', dictionary)
 
 
@@ -502,7 +565,7 @@ def upload_song(request):
 
     data = {'song': song, 'title': title, 'album': album, 'artist': artist, 'year': year, 'upload_art': upload_art}
 
-    (id, exists) = song_service.upload_song(data)
+    id, exists = song_service.upload_song(data, request.user)
 
     data.pop("upload_art")
     data.pop("song")
@@ -522,3 +585,117 @@ def getSongById(request, song_id):
     response['Content-Disposition'] = f'attachment; filename="{os.path.basename(file_name)}"'
 
     return response
+
+
+@login_required
+def getAlbumById(request, album_id):
+    zip_buffer = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
+        for song in Song.objects.filter(album__id=album_id):
+            song_path = song.song_in_bytes.file
+            file_name = str(os.path.join(str(settings.MEDIA_ROOT), str(song_path)))
+            with open(file_name, 'rb') as f:
+                bytearray_of_song = f.read()
+            zip_file.writestr(os.path.basename(file_name), io.BytesIO(bytearray_of_song).getvalue())
+
+    response = RangedFileResponse(request, zip_buffer, content_type='application/zip')
+    album_name = Album.objects.filter(id=album_id).first().name
+    artist_name = Artist.objects.filter(album__id=album_id).first().name
+    response['Content-Disposition'] = f'attachment; filename="{artist_name.lower()}-{album_name.lower()}.zip"'
+
+    return response
+
+
+@login_required
+def getArtistById(request, artist_id):
+    zip_buffer = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
+        for album in Album.objects.filter(artist__id=artist_id):
+            for song in Song.objects.filter(album__id=album.id):
+                song_path = song.song_in_bytes.file
+                file_name = str(os.path.join(str(settings.MEDIA_ROOT), str(song_path)))
+                with open(file_name, 'rb') as f:
+                    bytearray_of_song = f.read()
+                zip_file.writestr(f"{album.name}/{os.path.basename(file_name)}",
+                                  io.BytesIO(bytearray_of_song).getvalue())
+
+    response = RangedFileResponse(request, zip_buffer, content_type='application/zip')
+    artist_name = Artist.objects.filter(id=artist_id).first().name
+    response['Content-Disposition'] = f'attachment; filename="{artist_name.lower()}.zip"'
+
+    return response
+
+
+@login_required
+@transaction.atomic
+def deleteSong(request, song_id):
+    song = Song.objects.filter(id=song_id).first()
+    if not song:
+        return HttpResponse(status=204)
+    album = song.album
+    song.delete()
+    song.song_in_bytes.delete()
+    show = 'song'
+    if not Song.objects.filter(album__id=album.id).exists():
+        albumId = album.id
+        artists = Artist.objects.filter(album__id=albumId)
+        album.delete()
+        show = 'album'
+        for artist in artists:
+            if not Album.objects.filter(id=albumId, artist__id=artist.id).exists():
+                show = 'artist'
+                artist.delete()
+    return HttpResponse(status=200, content=json.dumps({
+        'show': show
+    }), content_type='application/json')
+
+
+@login_required
+def editSong(request, song_id):
+    pass
+
+
+@login_required
+@transaction.atomic
+def deleteAlbum(request, album_id):
+    for song in Song.objects.filter(album__id=album_id):
+        song.delete()
+        song.song_in_bytes.delete()
+    album = Album.objects.filter(id=album_id).first()
+    if not album:
+        return HttpResponse(status=204)
+    artists = Artist.objects.filter(album__id=album_id)
+    album.delete()
+    show = 'album'
+    for artist in artists:
+        if not Album.objects.filter(id=album_id, artist__id=artist.id).exists():
+            show = 'artist'
+            artist.delete()
+    return HttpResponse(status=200, content=json.dumps({
+        'show': show
+    }), content_type='application/json')
+
+
+@login_required
+def editAlbum(request, album_id):
+    pass
+
+
+@login_required
+@transaction.atomic
+def deleteArtist(request, artist_id):
+    for album in Album.objects.filter(artist__id=artist_id):
+        for song in Song.objects.filter(album__id=album.id):
+            song.delete()
+            song.song_in_bytes.delete()
+        album.delete()
+    artist = Artist.objects.filter(id=artist_id).first()
+    artist.delete()
+    return HttpResponse(status=200, content=json.dumps({
+        'show': "artist"
+    }), content_type='application/json')
+
+
+@login_required
+def editArtist(request, artist_id):
+    pass

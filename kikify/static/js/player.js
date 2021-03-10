@@ -47,7 +47,7 @@ const createPlaylistFromSongs = (currentSongUrl, shuffle = false) => {
     currentPlayList.forEach(elem => {
         if (elem.album_art) {
             let song_div = document.getElementById(elem.id)
-            if (song_div.getElementsByTagName("img")[0].src !== elem.album_art) {
+            if (song_div && song_div.getElementsByTagName("img")[0].src !== elem.album_art) {
                 song_div.getElementsByTagName("img")[0].src = elem.album_art;
             }
         }

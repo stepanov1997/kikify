@@ -24,3 +24,35 @@
     overflow: auto;
     white-space: nowrap;
 }
+
+.album-container * {
+    box-sizing: border-box;
+}
+
+.album-container .header-icons {
+    position: relative; top:0; right:0;
+    text-align: right;
+}
+
+.album-container .footer-icons {
+    position: relative; bottom:0; right:0;
+    text-align: center;
+}
+
+.album-container .header-icons .fas {
+    font-size: 110%;
+}
+
+.album-container .header-icons .fa-trash-alt {
+    color: red;
+}
+
+.album-container .header-icons .fa-edit {
+    color: gold;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
+}
+
+.album-container .footer-icons .fa-download {
+    color: dodgerblue;
+}

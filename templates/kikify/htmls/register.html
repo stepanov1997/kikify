@@ -68,19 +68,6 @@
                     </div>
                 </div>
 
-                <div class="flex-column p-30">
-                    {% if isUser %}
-                        <div class="wrap-input100 validate-input m-b-45" data-validate="Select user type:">
-                            <select class="input100" name="user_type">
-                                <option value="Classic">Classic</option>
-                                <option value="Record label">Record label</option>
-                            </select>
-                            <span id="passwordSpan" class="focus-input100"
-                                  data-placeholder="Select user type:"></span>
-                        </div>
-                    {% endif %}
-                </div>
-
                 <div class="row py-0 flex-c ">
                     <div class="w-50">
                         <!-- Upload image input-->
@@ -111,7 +98,7 @@
                         Register
                     </button>
                 </div>
-                {% if not post_request and not successful %}
+                {% if post_request and not successful %}
                     <div class="m-b-8 login-more p-t-20 text-center">
                         <span class="txt1" style="color:red">
                             Wrong username or password.

@@ -1,6 +1,5 @@
 {% load static %}
 {% block player %}
-    {% if isUser %}
     <div class="audio-player">
         <div class="timeline">
             <div class="progress"></div>
@@ -17,24 +16,24 @@
                     <img id="back-img" class="control-item-small" src="{% static "icons/back.svg" %}" alt="Back">
                     <img id="play-img" class="control-item toggle-play play" src="{% static "icons/play.svg" %}"
                          alt="Play">
-                    <img id="forward-img" class="control-item-small" src="{% static "icons/forward.svg" %}" alt="Previous">
+                    <img id="forward-img" class="control-item-small" src="{% static "icons/forward.svg" %}"
+                         alt="Previous">
+                    <div class="volume-container">
+                        <div class="volume-button">
+                            <div class="volume icono-volumeMedium"></div>
+                        </div>
+
+                        <div class="volume-slider">
+                            <div class="volume-percentage"></div>
+                        </div>
+                    </div>
                 </div>
                 <img id="next-img" class="control-item" src="{% static "icons/next.svg" %}" alt="Next">
             </div>
         </div>
-        <div class="volume-container">
-            <div class="volume-button">
-                <div class="volume icono-volumeMedium"></div>
-            </div>
 
-            <div class="volume-slider">
-                <div class="volume-percentage"></div>
-            </div>
-        </div>
         <div id="song-info" style="display: flex; flex-direction: row;text-align: center; width: 100%">
 
         </div>
     </div>
-    {% else %}
-    {% endif %}
 {% endblock %}

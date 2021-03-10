@@ -3,17 +3,29 @@
     <div class="songs-container">
         {% for song in songs %}
             <div id="{{ song.id }}" class="song-container">
-                <h5 class="artist-name" onclick="openArtist(`{% url 'albumsOfArtist' song.album.artist.first.id %}`, {{ song.album.artist.first.id }})">
+                <div class="header-icons">
+                    <a href="{% url 'getSongById' song.id %}" download="{{ song.song_in_bytes.file }}"><i
+                            class="fas fa-download"></i></a>
+                    {% if not isUser %}
+                        <a href="javascript:deleteSong(`{% url 'deleteSong' song.id %}`, '{{ song.name }}', '{{ song.id }}')"><i class="fas fa-trash-alt"></i></a>
+                        <a href="javascript:editSong(`{% url 'editSong' song.id %}`, '{{ song.name }}', '{{ song.id }}')"><i class="fas fa-edit"></i></a>
+                    {% endif %}
+                </div>
+                <h5 class="artist-name"
+                    onclick="openArtist(`{% url 'albumsOfArtist' song.album.artist.first.id %}`, {{ song.album.artist.first.id }}, {% if isUser %}false{% else %}true{% endif %})">
                     {{ song.album.artist.first.name }}
                 </h5>
-                <p class="album-name" onclick="openAlbum(`{% url 'songsOfAlbum' song.album.artist.first.id song.album.id %}`,{{ song.album.artist.first.id }},{{ song.album.id }})">
+                <p class="album-name"
+                   onclick="openAlbum(`{% url 'songsOfAlbum' song.album.artist.first.id song.album.id %}`,{{ song.album.artist.first.id }},{{ song.album.id }}, {% if isUser %}false{% else %}true{% endif %})">
                     {{ song.album.name }} ({{ song.year_of_production }})
                 </p>
                 <img class="album-art"
                      src="data:image/png;base64,{{ song.album.picture |  bytesToString }}"
                      onclick="playSong(`{% url 'getSongById' song.id %}`, `{{ song.name }}`, `{{ song.album.name }}`, `{{ song.album.artist.first.name }}`, true)"
                      alt="No photo"><br>
-                <a class="songJSON" hidden>{"id":"{{ song.id }}", "url":"{% url "getSongById" song.id %}","name":"{{ song.name }}","album":"{{ song.album.name }}","artist":"{{ song.album.artist.first.name }}", "year":"{{ song.year_of_production }}"}</a>
+                <a class="songJSON" hidden>{"id":"{{ song.id }}",
+                    "url":"{% url "getSongById" song.id %}","name":"{{ song.name }}","album":"{{ song.album.name }}","artist":"{{ song.album.artist.first.name }}",
+                    "year":"{{ song.year_of_production }}"}</a>
                 <a href="javascript:playSong(`{% url 'getSongById' song.id %}`, `{{ song.name }}`, `{{ song.album.name }})`, `{{ song.album.artist.first.name }}`, true)">{{ song.name }}</a>
             </div>
         {% endfor %}

@@ -1,20 +1,22 @@
 import base64
 import os
 
-from kikify.models import Artist, Album, File, Song
+from django.db import transaction
+
+from kikify.models import Artist, Album, File, Song, RecordLabel
 from django.core.files import File as Files
 
 from kikify_django import settings
 
 
-def upload_song(infos):
+@transaction.atomic
+def upload_song(infos, user):
     # Creating artist
     exists = True
 
     artists = list(Artist.objects.filter(name=infos['artist']))
     artist = None
     if len(artists) == 0:
-        exists = True
         artist = Artist.objects.create(name=infos['artist'])
     else:
         artist = artists[0]
@@ -33,6 +35,7 @@ def upload_song(infos):
         album.artist.add(artist)
     else:
         album = albums[0]
+    album.record_label.add(RecordLabel.objects.filter(user=user).first())
 
     # Creating song
     f = Files(file=open(infos["song"].temporary_file_path(), "rb"))
@@ -66,4 +69,3 @@ def upload_song(infos):
     print(f'Song {song.name} has been saved successfully.')
 
     return (song.id, exists)
-

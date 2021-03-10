@@ -29,3 +29,35 @@
     overflow: auto;
     white-space: nowrap;
 }
+
+.artist-container * {
+    box-sizing: border-box;
+}
+
+.artist-container .header-icons {
+    position: relative; top:0; right:0;
+    text-align: right;
+}
+
+.artist-container .footer-icons {
+    position: relative; bottom:0; right:0;
+    text-align: center;
+}
+
+.artist-container .header-icons .fas {
+    font-size: 110%;
+}
+
+.artist-container .header-icons .fa-trash-alt {
+    color: red;
+}
+
+.artist-container .header-icons .fa-edit {
+    color: gold;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
+}
+
+.artist-container .footer-icons .fa-download {
+    color: dodgerblue;
+}

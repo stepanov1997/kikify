@@ -15,14 +15,14 @@
 <body>
 
 <div class="header">
-    {% include "kikify/components/header.html" with type=type %}
+    {% include "kikify/components/header.html" with type=type isUser=isUser %}
 </div>
 
 <div class="d-flex" id="wrapper">
 
 
     <div class="sidebar">
-        {% include "kikify/components/sidebar.html" with user_image=user_image username=username about=about %}
+        {% include "kikify/components/sidebar.html" with user_image=user_image username=username about=about isUser=isUser %}
     </div>
 
     <!-- Page Content -->

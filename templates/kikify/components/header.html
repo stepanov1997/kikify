@@ -18,13 +18,13 @@
                                 class="sr-only">(current)</span></a>
                     </li>
                     <li class="mobile nav-item">
-                        <a href="javascript:openArtists('{% url 'artists' %}')" class="nav-link">Artists</a>
+                        <a href="javascript:openArtists('{% url 'artists' %}', {% if isUser %}false{% else %}true{% endif %})" class="nav-link">Artists</a>
                     </li>
                     <li class="mobile nav-item">
-                        <a href="javascript:openAlbums('{% url 'albums' %}')" class="nav-link">Albums</a>
+                        <a href="javascript:openAlbums('{% url 'albums' %}', {% if isUser %}false{% else %}true{% endif %})" class="nav-link">Albums</a>
                     </li>
                     <li class="mobile nav-item">
-                        <a href="javascript:openSongs('{% url 'songs' %}')" class="nav-link">Songs</a>
+                        <a href="javascript:openSongs('{% url 'songs' %}', {% if isUser %}false{% else %}true{% endif %})" class="nav-link">Songs</a>
                     </li>
                     <li class="nav-item dropdown px-2">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"

@@ -18,9 +18,11 @@ const loadPage = async (url, isUser) => {
     //     $("#wrapper").toggleClass("toggled");
     // });
     if(isUser){
-         await openArtists(url)
+        const isRecordLabel = !isUser
+        await openArtists(url, isRecordLabel)
     }else{
-
+        const isRecordLabel = !isUser
+        await openArtists(url, isRecordLabel)
     }
 
 }

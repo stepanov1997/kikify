@@ -3,10 +3,22 @@
     <div id='container' class="artists-container">
         {% for artist in artists %}
             <div class="artist-container">
-                <img class="artist-art" src='{% static "artist-512.png"%}'
-                     onclick="openArtist(`{% url 'albumsOfArtist' artist.id %}`, {{ artist.id }})" alt="">
+                <div class="header-icons">
+                    <a href="{% url 'getArtistById' artist.id %}"
+                       download="{{ artist.name | add:".zip" | lower }}"><i
+                            class="fas fa-download"></i></a>
+                    {% if not isUser %}
+                        <a href="javascript:deleteArtist(`{% url 'deleteArtist' artist.id %}`, '{{ artist.name }}', '{{ artist.id }}')"><i
+                                class="fas fa-trash-alt"></i></a>
+                        <a href="javascript:editArtist(`{% url 'editArtist' artist.id %}`, '{{ artist.name }}', '{{ artist.id }}')"><i
+                                class="fas fa-edit"></i></a>
+                    {% endif %}
+                </div>
+                <img class="artist-art" src='{% static "artist-512.png" %}'
+                     onclick="openArtist(`{% url 'albumsOfArtist' artist.id %}`, {{ artist.id }}, {% if isUser %}false{% else %}true{% endif %})"
+                     alt="">
                 <p class="artist-name"
-                   onclick="openArtist(`{% url 'albumsOfArtist' artist.id %}`, {{ artist.id }})">{{ artist.name }}</p>
+                   onclick="openArtist(`{% url 'albumsOfArtist' artist.id %}`, {{ artist.id }}, {% if isUser %}false{% else %}true{% endif %})">{{ artist.name }}</p>
                 <a class="artistJSON" hidden>{"id":"{{ artist.id }}","name":"{{ artist.name }}"}</a>
             </div>
         {% endfor %}
