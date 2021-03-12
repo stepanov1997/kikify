@@ -77,7 +77,8 @@ async function deleteAlbum(url, name, albumId) {
     }
 }
 
-async function editAlbum(url, name, albumId) {
+async function editAlbum(event, url, id, name, artist) {
+    event.preventDefault()
     if (confirm(`Are you sure you want to edit album "${name}"?`)) {
         alert("Album edited.")
     } else {

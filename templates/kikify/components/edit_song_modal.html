@@ -1,0 +1,35 @@
+<div class="modal fade" id="editSongModal" tabindex="-1" role="dialog" aria-labelledby="editSongModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form onsubmit="editSong(event, '{% url 'editSong' %}',$('#edit-song-id').val(), $('#edit-song-title').val(),$('#edit-song-album').val(),$('#edit-song-artist').val())">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editSongModalLabel">Edit song information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                        <input id="edit-song-id" type="text" hidden>
+                        <div class="form-group">
+                            <label for="edit-song-title" class="col-form-label">Title:</label>
+                            <input type="text" class="form-control" id="edit-song-title">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-song-album" class="col-form-label">Album:</label>
+                            <input type="text" class="form-control" id="edit-song-album">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-song-artist" class="col-form-label">Artist:</label>
+                            <input type="text" class="form-control" id="edit-song-artist">
+                        </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Edit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

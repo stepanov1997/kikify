@@ -9,6 +9,7 @@ import zipfile
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import logging
+import datetime
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -20,6 +21,7 @@ from django.urls import reverse
 from mutagen.easyid3 import EasyID3
 from ranged_fileresponse import RangedFileResponse
 from requests import Response
+import copy
 
 from kikify.forms import UserForm, UserProfileInfoForm
 from kikify_django import settings
@@ -479,7 +481,7 @@ def songs(request):
     isRecordLabel = bool(body['isRecordLabel'])
 
     if isRecordLabel:
-        song_list = Song.objects.filter(album__record_label__user__id=request.user.id)
+        song_list = Song.objects.filter(album__record_label__user__id=request.user.id).all()
     else:
         song_list = Song.objects.all()
 
@@ -651,8 +653,97 @@ def deleteSong(request, song_id):
 
 
 @login_required
-def editSong(request, song_id):
-    pass
+@transaction.atomic
+def editSong(request):
+    if request.method == 'POST':
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        id, name, album, artist = int(body["id"]), body["name"], body["album"], body["artist"]
+
+        song = Song.objects.filter(id=id).first()
+        if not song:
+            return HttpResponse(status=204)
+        song.name = name
+        song.save()
+        show = 'song'
+        albums = Album.objects.filter(name=album)
+        edit_album = None
+        old_album = song.album
+
+        if albums.exists():
+            if song.album.id != albums.first().id:
+                show = 'album'
+                song.album = albums.first()
+                song.save()
+
+            edit_album = albums.first()
+        else:
+            record_label = RecordLabel.objects.filter(user__id=request.user.id).first()
+            new_album = copy.copy(old_album)
+            new_album.id = None
+            new_album.name = album
+            new_album.save()
+
+            record_label.album_set.add(new_album)
+            song.album = new_album
+            song.save()
+
+            edit_album = new_album
+
+        old_album_artist = Artist.objects.filter(album__id=old_album.id)
+        new_album_artist = Artist.objects.filter(album__id=edit_album.id)
+        new_artist = Artist.objects.filter(name=artist)
+
+        #if old_album_artist.exists() and new_album_artist.exists() and old_album_artist.first().id != new_album_artist.first().id:
+        #    old_album_artist
+        # Postojao je izvođač novog albuma i novi izvođač
+        if old_album_artist.exists() and new_artist.exists():
+            if old_album_artist.first().id != new_artist.first().id:
+                old_album_artist.first().album_set.remove(edit_album)
+            new_artist.first().album_set.add(edit_album)
+            edit_artist = new_artist.first()
+            if not Song.objects.filter(album__id=old_album.id).exists():
+                old_album.delete()
+                show = 'artist'
+                # if old_album_artist.exists() and not Album.objects.filter(
+                #         artist__id=old_album_artist.first().id).exists():
+                #     old_album_artist.first().delete()
+
+        # Postojao je izvođač novog albuma, a nije novi izvođač
+        elif old_album_artist.exists() and not new_artist.exists():
+            old_album_artist.first().album_set.remove(edit_album)
+            edit_artist = Artist(name=artist)
+            edit_artist.save()
+            edit_artist.album_set.add(edit_album)
+            show = 'artist'
+            if not Song.objects.filter(album__id=old_album.id).exists():
+                old_album.delete()
+                show = 'artist'
+                # if old_album_artist.exists() and not Album.objects.filter(
+                #         artist__id=old_album_artist.first.id).exists():
+                #     old_album_artist.first().delete()
+        # Nije postojao izvođač novog albuma, a jeste novi izvođač
+        elif not old_album_artist.exists() and new_artist.exists():
+            new_artist.first().album_set.add(edit_album)
+            edit_artist = new_artist.first()
+        # Nije postojao ni izvođač novog albuma, a ni novi izvođač
+        else:
+            edit_artist = Artist(name=artist)
+            edit_artist.save()
+            edit_artist.album_set.add(edit_album)
+            show = 'artist'
+
+        return HttpResponse(status=200, content=json.dumps({
+            'id': id,
+            'name': name,
+            'album': album,
+            'artist': artist,
+            'show':show
+        }), content_type='application/json')
+
+
+    else:
+        return HttpResponse("GET request not found.")
 
 
 @login_required
@@ -677,7 +768,8 @@ def deleteAlbum(request, album_id):
 
 
 @login_required
-def editAlbum(request, album_id):
+@transaction.atomic
+def editAlbum(request):
     pass
 
 
@@ -697,5 +789,6 @@ def deleteArtist(request, artist_id):
 
 
 @login_required
-def editArtist(request, artist_id):
+@transaction.atomic
+def editArtist(request):
     pass

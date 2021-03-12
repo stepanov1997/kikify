@@ -1,0 +1,75 @@
+<div class="form-popup" id="myForm">
+    <form onsubmit="return uploadFile(event, '{% url "upload_song" %}')" class="form-container text-center"
+          enctype="multipart/form-data">
+        <h4 class="title">Upload song</h4>
+
+        <div class="row py-0 flex-c text-center justify-content-center">
+            <div class="w-50">
+                <!-- Upload image input-->
+                <div class="input-group mb-3 px-2 py-0 rounded-pill bg-white shadow-sm"
+                     style="justify-content: center">
+                    <input id="upload" type="file" name="profile_image"
+                           onchange="readSong(event, '{% url 'get_music_info' %}')"
+                           class="form-control border-0" style="display: none" hidden>
+                    <label id="upload-label" for="upload" class="font-weight-light text-muted"
+                           style="display: none"></label>
+                    <div class="input-group-append">
+                        <label for="upload" class="btn btn-light m-0 rounded-pill px-4"> <i
+                                class="fa fa-cloud-upload mr-2 text-muted"></i><small
+                                class="text-uppercase font-weight-bold text-muted"> Song </small></label>
+                    </div>
+                </div>
+
+                <!-- Uploaded image area-->
+                <div class="image-area mt-1">
+                    <img id="imageResult" src="#" alt=""
+                         class="img-fluid rounded shadow-sm mx-auto d-block w-30">
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <label for="uploadedSong">
+                <h4 id="filename"></h4>
+            </label>
+            <audio id="uploadedSong" hidden controls>
+                <source id="sourceUploadedSong" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+
+        </div>
+
+        <label for="psw"><b>Title: </b></label>
+        <input id="title" type="text" placeholder="Enter title" name="title" required>
+
+        <label for="psw"><b>Album: </b></label><br>
+        <input id="album" type="text" placeholder="Enter album" name="psw" required>
+
+        <label for="psw"><b>Artist: </b></label><br>
+        <input id="artist" type="text" placeholder="Enter artist" name="psw" required>
+
+        <label for="psw"><b>Year: </b></label>
+        <input id="year" type="number" placeholder="Enter year" name="psw" required>
+
+        <div class="row py-0 flex-c text-center justify-content-center">
+            <div class="w-50">
+                <!-- Upload image input-->
+                <div class="input-group mb-3 px-2 py-0 rounded-pill bg-white shadow-sm"
+                     style="justify-content: center">
+                    <input id="upload-art" type="file" name="profile_image"
+                           onchange="readURLAlbumArt(event);"
+                           class="form-control border-0" style="display: none">
+                    <div class="input-group-append">
+                        <label for="upload-art" class="btn btn-light m-0 rounded-pill px-4"> <i
+                                class="fa fa-cloud-upload mr-2 text-muted"></i><small
+                                class="text-uppercase font-weight-bold text-muted"> Album
+                            art </small></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn" style="background-color: #4CAF50;">Upload song</button>
+        <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+    </form>
+</div>

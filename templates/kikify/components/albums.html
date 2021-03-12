@@ -2,19 +2,18 @@
     {% load custom_filters %}
     <div>
         {% if artist %}
-            <h1>{{ artist.name }}</h1><br>
+            <h1>{{ album.artist.first.name }}</h1><br>
         {% endif %}
         <div class="albums-container">
             {% for album in albums %}
-                <div class="album-container">
+                <div id="{{ album.id }}" class="album-container">
                     <div class="header-icons">
                         <a href="{% url 'getAlbumById' album.id %}" download="{{ artist.name | add:" - " | add:album.name | add:".zip" | lower }}"><i
                                 class="fas fa-download"></i></a>
                         {% if not isUser %}
                             <a href="javascript:deleteAlbum(`{% url 'deleteAlbum' album.id %}`, '{{ album.name }}', '{{ album.id }}')"><i
                                     class="fas fa-trash-alt"></i></a>
-                            <a href="javascript:editAlbum(`{% url 'editAlbum' album.id %}`, '{{ album.name }}', '{{ album.id }}')"><i
-                                    class="fas fa-edit"></i></a>
+                            <a data-toggle="modal" data-target="#editAlbumModal" data-content="{{ album.id }}" {#href="javascript:editAlbum(`{% url 'editAlbum' album.id %}`, '{{ album.name }}', '{{ album.id }}')"#}><i class="fas fa-edit"></i></a>
                         {% endif %}
                     </div>
                     {% if not artist %}
@@ -34,7 +33,7 @@
                             class="album-name">{{ album.name }}</h4>
                     {% endif %}
                     <a class="albumJSON"
-                       hidden>{"id":"{{ album.id }}","name":"{{ album.name }}","artist":"{{ album.artist.name }}",
+                       hidden>{"id":"{{ album.id }}","name":"{{ album.name }}","artist":"{{ album.artist.first.name }}",
                         "year":"{{ album.year_of_production }}"}</a>
                 </div>
             {% endfor %}

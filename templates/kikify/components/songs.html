@@ -7,18 +7,25 @@
                     <a href="{% url 'getSongById' song.id %}" download="{{ song.song_in_bytes.file }}"><i
                             class="fas fa-download"></i></a>
                     {% if not isUser %}
-                        <a href="javascript:deleteSong(`{% url 'deleteSong' song.id %}`, '{{ song.name }}', '{{ song.id }}')"><i class="fas fa-trash-alt"></i></a>
-                        <a href="javascript:editSong(`{% url 'editSong' song.id %}`, '{{ song.name }}', '{{ song.id }}')"><i class="fas fa-edit"></i></a>
+                        <a href="javascript:deleteSong(`{% url 'deleteSong' song.id %}`, '{{ song.name }}', '{{ song.id }}')"><i
+                                class="fas fa-trash-alt"></i></a>
+                        <a data-toggle="modal" data-target="#editSongModal" data-content="{{ song.id }}"
+                                {#href="javascript:editSong(`{% url 'editSong' song.id %}`, '{{ song.name }}', '{{ song.id }}')"#}><i
+                                class="fas fa-edit"></i></a>
                     {% endif %}
                 </div>
-                <h5 class="artist-name"
-                    onclick="openArtist(`{% url 'albumsOfArtist' song.album.artist.first.id %}`, {{ song.album.artist.first.id }}, {% if isUser %}false{% else %}true{% endif %})">
-                    {{ song.album.artist.first.name }}
-                </h5>
+                {% for artist in song.album.artist.all %}
+                    <h5 class="artist-name"
+                        onclick="openArtist(`{% url 'albumsOfArtist' artist.id %}`, {{ artist.id }}, {% if isUser %}false{% else %}true{% endif %})">
+                        {{ artist.name }}
+                    </h5>
+                {% endfor %}
+                {% for artist in song.album.artist.all %}
                 <p class="album-name"
-                   onclick="openAlbum(`{% url 'songsOfAlbum' song.album.artist.first.id song.album.id %}`,{{ song.album.artist.first.id }},{{ song.album.id }}, {% if isUser %}false{% else %}true{% endif %})">
+                   onclick="openArtist(`{% url 'albumsOfArtist' artist.id %}`, {{ artist.id }}, {% if isUser %}false{% else %}true{% endif %})">
                     {{ song.album.name }} ({{ song.year_of_production }})
                 </p>
+                {% endfor %}
                 <img class="album-art"
                      src="data:image/png;base64,{{ song.album.picture |  bytesToString }}"
                      onclick="playSong(`{% url 'getSongById' song.id %}`, `{{ song.name }}`, `{{ song.album.name }}`, `{{ song.album.artist.first.name }}`, true)"

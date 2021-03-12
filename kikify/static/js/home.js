@@ -17,10 +17,10 @@ const loadPage = async (url, isUser) => {
     //     e.preventDefault();
     //     $("#wrapper").toggleClass("toggled");
     // });
-    if(isUser){
+    if (isUser) {
         const isRecordLabel = !isUser
         await openArtists(url, isRecordLabel)
-    }else{
+    } else {
         const isRecordLabel = !isUser
         await openArtists(url, isRecordLabel)
     }
@@ -277,4 +277,51 @@ async function back() {
         state.command()
     }
 }
+
+
+$(document).ready(() => {
+    $('#editSongModal').on('show.bs.modal', async e => {
+        const songid = $(e.relatedTarget).data('content')
+        await populateEditForm(songid);
+    });
+    $('#editAlbumModal').on('show.bs.modal', async e => {
+        const albumId = $(e.relatedTarget).data('content')
+        await populateEditForm(albumId);
+    });
+    $('#editArtistModal').on('show.bs.modal', async e => {
+        const artistId = $(e.relatedTarget).data('content')
+        await populateEditForm(artistId);
+    });
+})
+
+async function populateEditForm(id) {
+    const div = document.getElementById(id)
+    const unit = states[states.length - 1].unit
+    const jsonInput = div.getElementsByClassName(`${unit}JSON`)[0].innerHTML
+    const infos = JSON.parse(jsonInput)
+    switch (unit) {
+        case 'song': {
+            document.getElementById("edit-song-id").value = infos.id
+            document.getElementById("edit-song-title").value = infos.name
+            document.getElementById("edit-song-album").value = infos.album
+            document.getElementById("edit-song-artist").value = infos.artist
+        }
+            break;
+        case 'album': {
+            document.getElementById("edit-album-id").value = infos.id
+            document.getElementById("edit-album-name").value = infos.name
+            document.getElementById("edit-album-artist").value = infos.artist
+        }
+            break;
+        case 'artist': {
+            document.getElementById("edit-artist-id").value = infos.id
+            document.getElementById("edit-artist-name").value = infos.name
+        }
+            break;
+        default: {
+
+        }
+    }
+}
+
 

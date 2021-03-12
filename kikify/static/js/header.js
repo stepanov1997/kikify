@@ -80,7 +80,7 @@ function readURLAlbumArt(event) {
 
 async function uploadFile(event, url) {
     event.preventDefault()
-    const image = document.getElementById("imageResult").src.split(", ")[1]
+    const image = document.getElementById("imageResult").src.split(",")[1]
     let formdata = new FormData();
     const submitFields = {
         title: document.getElementById("title").value,
