@@ -79,7 +79,44 @@ async function deleteArtist(url, name, albumId) {
 async function editArtist(event, url, id, name) {
     event.preventDefault()
     if (confirm(`Are you sure you want to edit artist "${name}"?`)) {
-        alert("Artist edited.")
+        const csrftoken = getCookie('csrftoken');
+        try {
+            const response = await fetch(url, {
+                headers: {"X-CSRFToken": csrftoken},
+                method: 'POST',
+                body: JSON.stringify({
+                    id: id,
+                    name: name,
+                })
+            })
+            if (response.status === 204)
+                alert("Artist not found.")
+            else if (response.status === 200) {
+                let data = await response.json()
+                if (!data.show) {
+                    alert("Artist cannot be edited")
+                    return;
+                }
+                let poppedStated;
+                let found = false;
+                while (states.length !== 0 && !found) {
+                    poppedStated = states.pop()
+                    if (poppedStated.unit === data.show) {
+                        found = true;
+                    }
+                }
+                if (found) {
+                    alert("Artist is successfully edited. 😀")
+                    $('#editAlbumModal').modal('hide');
+                    await poppedStated.command()
+                } else {
+                    alert("Artist cannot be edited")
+                }
+            } else
+                alert("Artist cannot be edited")
+        } catch (e) {
+            alert("Artist cannot be edited")
+        }
     } else {
         alert("Ok.")
     }

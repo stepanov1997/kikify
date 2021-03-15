@@ -1,35 +1,38 @@
 {% load static %}
 {% block player %}
     <div class="audio-player">
-        <div class="timeline">
-            <div class="progress"></div>
+        <div class="first-row">
+            <div class="timeline">
+                <div class="progress"></div>
+
+            </div>
+            <div class="play-options">
+                <i id="shuffle-icon" class="fas fa-random shuffle-disabled" onclick="turnOnShuffle()"></i>
+            </div>
+            <div class="volume-container">
+                <i class="fa fa-volume-down" onclick="volumeMute()"></i> &nbsp;
+                <input type="range" min="0" max="100" value="50" class="slider" id="myRange"> &nbsp;
+                <i class="fa fa-volume-up" onclick="volumeMax()"></i>
+            </div>
         </div>
+
         <div class="time">
             <div class="current"></div>
             <div class="divider">/</div>
             <div class="length"></div>
         </div>
-        <div class="controls-wrapper">
-            <div class="controls-box">
-                <img id="prev-img" class="control-item" src="{% static "icons/prev.svg" %}" alt="Previous">
+        <div class="controls-box">
+            <img id="prev-img" class="control-item" src="{% static "icons/prev.svg" %}" alt="Previous">
+            <div class="controls-box-wrapper">
                 <div class="controls-box">
                     <img id="back-img" class="control-item-small" src="{% static "icons/back.svg" %}" alt="Back">
                     <img id="play-img" class="control-item toggle-play play" src="{% static "icons/play.svg" %}"
                          alt="Play">
                     <img id="forward-img" class="control-item-small" src="{% static "icons/forward.svg" %}"
                          alt="Previous">
-                    <div class="volume-container">
-                        <div class="volume-button">
-                            <div class="volume icono-volumeMedium"></div>
-                        </div>
-
-                        <div class="volume-slider">
-                            <div class="volume-percentage"></div>
-                        </div>
-                    </div>
                 </div>
-                <img id="next-img" class="control-item" src="{% static "icons/next.svg" %}" alt="Next">
             </div>
+            <img id="next-img" class="control-item" src="{% static "icons/next.svg" %}" alt="Next">
         </div>
 
         <div id="song-info" style="display: flex; flex-direction: row;text-align: center; width: 100%">

@@ -1,10 +1,11 @@
 let currentPlayList = [];
 
 const audio = new Audio();
+let shuffle = false;
 
 function changeMusicSongAlbumArt(url) {
     currentPlayList.forEach(elem => {
-        if (elem.album_art) {
+        if (elem && elem.album_art) {
             let song_div = document.getElementById(elem.id)
             if (song_div.getElementsByTagName("img")[0].src !== elem.album_art) {
                 song_div.getElementsByTagName("img")[0].src = elem.album_art;
@@ -13,7 +14,8 @@ function changeMusicSongAlbumArt(url) {
     })
     let song_div = document.getElementById(currentPlayList[0].id)
     currentPlayList[0].album_art = song_div.getElementsByTagName("img")[0].src
-    song_div.getElementsByTagName("img")[0].src = '/C:/static/icons/song.svg'
+    //song_div.getElementsByTagName("img")[0].src = '/C:/static/icons/song.svg'
+    song_div.getElementsByTagName("img")[0].src = '/C:/static/icons/current-song.gif'
 }
 
 const playSong = async (url, name, album, artist, isClick) => {
@@ -23,10 +25,17 @@ const playSong = async (url, name, album, artist, isClick) => {
     playBtn.classList.remove("play");
     playBtn.classList.add("pause");
     playBtn.setAttribute('src', '/C:/static/icons/pause.svg')
+
+    const value = parseFloat(document.getElementById('myRange').value)
+    let newValue = (value / 101).toFixed(3)
+    if (newValue > 0.95) newValue = 1;
+    else if (newValue < 0.05) newValue = 0;
+    audio.volume = parseFloat(newValue);
+
     await audio.play();
 
     if (isClick)
-        createPlaylistFromSongs(url, false);
+        createPlaylistFromSongs(url, shuffle);
 
     changeMusicSongAlbumArt(url)
 
@@ -45,7 +54,7 @@ const playSong = async (url, name, album, artist, isClick) => {
 
 const createPlaylistFromSongs = (currentSongUrl, shuffle = false) => {
     currentPlayList.forEach(elem => {
-        if (elem.album_art) {
+        if (elem && elem.album_art) {
             let song_div = document.getElementById(elem.id)
             if (song_div && song_div.getElementsByTagName("img")[0].src !== elem.album_art) {
                 song_div.getElementsByTagName("img")[0].src = elem.album_art;
@@ -55,7 +64,9 @@ const createPlaylistFromSongs = (currentSongUrl, shuffle = false) => {
     const songsURLs = document.getElementsByClassName("songJSON");
     let temp = Array.from(songsURLs).map(elem => JSON.parse(elem.innerHTML));
     if (shuffle) {
-        temp = temp.sort(() => .5 - Math.random());
+        temp = temp.sort((a, b) => Math.random() - 0.5);
+        temp = temp.sort((a, b) => Math.random() - 0.5);
+        temp = temp.sort((a, b) => Math.random() - 0.5);
     }
     index = temp.findIndex(p => p.url === currentSongUrl)
     const temp2 = []
@@ -83,7 +94,83 @@ async function playNextSong() {
     }
 }
 
+
+let oldPosition;
+
+function volumeMute() {
+    let range = document.getElementById("myRange")
+    if (audio.muted)
+        range.value = oldPosition
+    else {
+        oldPosition = parseFloat(range.value)
+        range.value = 0
+    }
+    audio.muted = !audio.muted
+}
+
+function volumeMax() {
+    audio.muted = false
+    let range = document.getElementById("myRange")
+    range.value = 100
+    audio.volume = 1
+}
+
+function turnOnShuffle() {
+    shuffle = !shuffle
+    const icon = document.getElementById('shuffle-icon')
+    if (shuffle) {
+        icon.classList.replace("shuffle-disabled", "shuffle-enabled")
+
+    } else {
+        icon.classList.replace("shuffle-enabled", "shuffle-disabled")
+    }
+    if (currentPlayList.length !== 0) {
+        const currentAudio = currentPlayList[0]
+        createPlaylistFromSongs(audio.src, shuffle)
+
+        let newPlayerList = currentPlayList.filter(e => e.url !== currentAudio.url)
+        newPlayerList.unshift(currentAudio)
+        currentPlayList = newPlayerList
+        changeMusicSongAlbumArt(audio.src)
+    }
+
+}
+
 $(document).ready(function () {
+    const updateVolume = function (x, vol) {
+        var volume = $('.volume');
+        var percentage;
+        //if only volume have specificed
+        //then direct update volume
+        if (vol) {
+            percentage = vol * 100;
+        } else {
+            var position = x - volume.offset().left;
+            percentage = 100 * position / volume.width();
+        }
+
+        if (percentage > 100) {
+            percentage = 100;
+        }
+        if (percentage < 0) {
+            percentage = 0;
+        }
+
+        //update volume bar and video volume
+        $('.volumeBar').css('width', percentage + '%');
+        audio.volume = percentage / 100;
+
+        //change sound icon based on volume
+        if (audio.volume === 0) {
+            $('.sound').removeClass('sound2').addClass('muted');
+        } else if (audio.volume > 0.5) {
+            $('.sound').removeClass('muted').addClass('sound2');
+        } else {
+            $('.sound').removeClass('muted').removeClass('sound2');
+        }
+
+    };
+
 //turn 128 seconds into 2:08
     function getTimeCodeFromNum(num) {
         let seconds = parseInt(num);
@@ -109,7 +196,7 @@ $(document).ready(function () {
                 audioPlayer.querySelector(".time .length").textContent = getTimeCodeFromNum(
                     audio.duration
                 );
-                audio.volume = .75;
+                //audio.volume = .75;
             }
 
         },
@@ -125,13 +212,13 @@ $(document).ready(function () {
     }, false);
 
 //click volume slider to change volume
-    const volumeSlider = audioPlayer.querySelector(".audio-player .volume-slider");
-    volumeSlider.addEventListener('click', e => {
-        const sliderWidth = window.getComputedStyle(volumeSlider).width;
-        const newVolume = e.offsetX / parseInt(sliderWidth);
-        audio.volume = newVolume;
-        audioPlayer.querySelector(".audio-player .volume-percentage").style.width = newVolume * 100 + '%';
-    }, false)
+//     const volumeSlider = audioPlayer.querySelector(".audio-player .volume-slider");
+//     volumeSlider.addEventListener('click', e => {
+//         const sliderWidth = window.getComputedStyle(volumeSlider).width;
+//         const newVolume = e.offsetX / parseInt(sliderWidth);
+//         audio.volume = newVolume;
+//         audioPlayer.querySelector(".audio-player .volume-percentage").style.width = newVolume * 100 + '%';
+//     }, false)
 
     if (audio.src !== "") {
         audioPlayer.querySelector(".time .length").textContent = getTimeCodeFromNum(
@@ -224,17 +311,18 @@ $(document).ready(function () {
         }
     }
 
-    audioPlayer.querySelector(".volume-button").addEventListener("click", () => {
-        const volumeEl = audioPlayer.querySelector(".volume-container .volume");
-        audio.muted = !audio.muted;
-        if (audio.muted) {
-            volumeEl.classList.remove("icono-volumeMedium");
-            volumeEl.classList.add("icono-volumeMute");
-        } else {
-            volumeEl.classList.add("icono-volumeMedium");
-            volumeEl.classList.remove("icono-volumeMute");
-        }
-    });
+    var slider = document.getElementById("myRange");
+
+    slider.oninput = function () {
+        if (audio.volume > 0)
+            audio.muted = false
+        audio.volume = (this.value / 100).toFixed(3);
+    }
+    slider.onchange = function () {
+        if (audio.volume > 0)
+            audio.muted = false
+        audio.volume = (this.value / 100).toFixed(3);
+    }
 
 })
 ;

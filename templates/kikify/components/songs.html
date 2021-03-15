@@ -20,12 +20,10 @@
                         {{ artist.name }}
                     </h5>
                 {% endfor %}
-                {% for artist in song.album.artist.all %}
                 <p class="album-name"
-                   onclick="openArtist(`{% url 'albumsOfArtist' artist.id %}`, {{ artist.id }}, {% if isUser %}false{% else %}true{% endif %})">
+                   onclick="openArtist(`{% url 'albumsOfArtist' song.album.artist.first.id %}`, {{ song.album.artist.first.id }}, {% if isUser %}false{% else %}true{% endif %})">
                     {{ song.album.name }} ({{ song.year_of_production }})
                 </p>
-                {% endfor %}
                 <img class="album-art"
                      src="data:image/png;base64,{{ song.album.picture |  bytesToString }}"
                      onclick="playSong(`{% url 'getSongById' song.id %}`, `{{ song.name }}`, `{{ song.album.name }}`, `{{ song.album.artist.first.name }}`, true)"

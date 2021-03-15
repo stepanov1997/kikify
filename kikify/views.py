@@ -538,7 +538,7 @@ def songsOfAlbum(request, artist_id, album_id):
 
     return render(request, 'kikify/components/songs.html', dictionary)
 
-
+@login_required
 def get_music_info(request):
     mp3file = request.FILES['file']
     tag = None
@@ -556,7 +556,7 @@ def get_music_info(request):
     json_response = json.dumps(parsed_tags)
     return HttpResponse(content=json_response, content_type='application/json')
 
-
+@login_required
 def upload_song(request):
     song = request.FILES["upload"]
     title = request.POST["title"]
@@ -770,7 +770,72 @@ def deleteAlbum(request, album_id):
 @login_required
 @transaction.atomic
 def editAlbum(request):
-    pass
+    if request.method == 'POST':
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        id, name, artist = int(body["id"]), body["name"], body["artist"]
+
+
+        show = 'song'
+        edit_album = None
+
+        old_album = Album.objects.filter(id=id).first()
+        new_albums = Album.objects.filter(name=name)
+
+        if new_albums.exists():
+            if old_album.id != new_albums.first().id:
+                for song in Song.objects.filter(album__id=id).all():
+                    song.album = new_albums.first()
+                old_album.delete()
+            edit_album = new_albums.first()
+        else:
+            old_album.name = name
+            old_album.save()
+
+            edit_album = old_album
+
+        old_album_artist = Artist.objects.filter(album__id=old_album.id)
+        new_album_artist = Artist.objects.filter(album__id=edit_album.id)
+        new_artist = Artist.objects.filter(name=artist)
+
+        # if old_album_artist.exists() and new_album_artist.exists() and old_album_artist.first().id != new_album_artist.first().id:
+        #    old_album_artist
+        # Postojao je izvođač novog albuma i novi izvođač
+        if old_album_artist.exists() and new_artist.exists():
+            if old_album_artist.first().id != new_artist.first().id:
+                old_album_artist.first().album_set.remove(edit_album)
+            new_artist.first().album_set.add(edit_album)
+            edit_artist = new_artist.first()
+            show = 'artist'
+
+        # Postojao je izvođač novog albuma, a nije novi izvođač
+        elif old_album_artist.exists() and not new_artist.exists():
+            old_album_artist.first().album_set.remove(edit_album)
+            edit_artist = Artist(name=artist)
+            edit_artist.save()
+            edit_artist.album_set.add(edit_album)
+            show = 'artist'
+        # Nije postojao izvođač novog albuma, a jeste novi izvođač
+        elif not old_album_artist.exists() and new_artist.exists():
+            new_artist.first().album_set.add(edit_album)
+            edit_artist = new_artist.first()
+        # Nije postojao ni izvođač novog albuma, a ni novi izvođač
+        else:
+            edit_artist = Artist(name=artist)
+            edit_artist.save()
+            edit_artist.album_set.add(edit_album)
+            show = 'artist'
+
+        return HttpResponse(status=200, content=json.dumps({
+            'id': id,
+            'name': name,
+            'artist': artist,
+            'show': show
+        }), content_type='application/json')
+
+
+    else:
+        return HttpResponse("GET request not found.")
 
 
 @login_required
@@ -791,4 +856,25 @@ def deleteArtist(request, artist_id):
 @login_required
 @transaction.atomic
 def editArtist(request):
-    pass
+    if request.method == 'POST':
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        id, name = int(body["id"]), body["name"]
+
+        old_artist = Artist.objects.filter(id=id).first()
+        new_artist = Artist.objects.filter(name=name)
+
+        if new_artist.exists():
+            if old_artist.id != new_artist.first().id:
+                for album in Album.objects.filter(artist__id=old_artist.id).all():
+                    new_artist.first().album_set.add(album)
+                old_artist.album_set.clear()
+        else:
+            old_artist.name = name
+            old_artist.save()
+
+        return HttpResponse(status=200, content=json.dumps({
+            'id': id,
+            'name': name,
+            'show': 'artist'
+        }), content_type='application/json')
