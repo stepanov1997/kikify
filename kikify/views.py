@@ -22,6 +22,7 @@ from mutagen.easyid3 import EasyID3
 from ranged_fileresponse import RangedFileResponse
 from requests import Response
 import copy
+from distutils.util import strtobool
 
 from kikify.forms import UserForm, UserProfileInfoForm, RecordLabelForm
 from kikify_django import settings
@@ -914,8 +915,9 @@ def editArtist(request):
 @transaction.atomic
 def editProfile(request):
     if request.method == 'POST':
-        firstname, secondname, username, email, password, image = request.POST["firstName"], request.POST["secondName"], request.POST[
-            "username"], request.POST["email"], request.POST['password'], request.FILES['profilePicture']
+        firstname, secondname, username, email, password, isUser = \
+            request.POST["firstName"], request.POST["secondName"], request.POST["username"], \
+            request.POST["email"], request.POST['password'], bool(strtobool(request.POST["isUser"]))
 
         user = request.user
         if user.check_password(password):
@@ -923,13 +925,17 @@ def editProfile(request):
             user.save()
 
             user_profile_info = UserProfileInfo.objects.filter(user=user)
-            if user_profile_info.exists():
-                user_profile_info.first().picture = image
-                user_profile_info.first().save()
             record_label = RecordLabel.objects.filter(user=user)
-            if record_label.exists():
-                record_label.first().picture = image.read()
-                record_label.first().save()
+            if isUser and user_profile_info.exists():
+                elem = user_profile_info.first()
+                elem.picture = request.FILES['profilePicture']
+                elem.save()
+            elif not isUser and record_label.exists():
+                elem = record_label.first()
+                elem.picture = request.FILES['profilePicture']
+                elem.save()
+        else:
+            return HttpResponse(status=204)
         return HttpResponse(status=200, content=json.dumps({
             'firstname': firstname,
             'secondname': secondname,

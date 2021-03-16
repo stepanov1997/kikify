@@ -346,7 +346,7 @@ async function populateProfileEditForm() {
     document.getElementById("edit-email").value = profile.email
 }
 
-async function editProfile(event, url, firstName, secondName, username, email, password, image) {
+async function editProfile(event, url, firstName, secondName, username, email, password, image, isUser) {
     event.preventDefault()
     if (confirm(`Are you sure you want to edit profile "${username}"?`)) {
         const csrftoken = getCookie('csrftoken');
@@ -356,7 +356,8 @@ async function editProfile(event, url, firstName, secondName, username, email, p
                     secondName: secondName,
                     username: username,
                     email: email,
-                    password: password
+                    password: password,
+                    isUser: isUser
             }
             var formData = new FormData();
             for(var obj in postReqBody){
