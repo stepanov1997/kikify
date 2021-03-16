@@ -40,23 +40,29 @@
                   enctype="multipart/form-data">
                 {% csrf_token %}
 
-                <div class="flex-two-rows">
+                <div class="flex-rows">
                     <div class="flex-col p-1 m-r-3">
-                        <div class="wrap-input100 validate-input m-b-20" data-validate="Enter email">
-                            <input class="input100" type="text" name="email">
-                            <span id="passwordSpan" class="focus-input100" data-placeholder="Enter email"></span>
-                        </div>
-
-                        <div class="wrap-input100 validate-input m-t-15 m-b-40 p-l-10" data-validate="Enter username">
-                            <input class="input100 {% if username %}has-val{% endif %}" type="text" name="username"
-                                   value="{% if username %}{{ username }}{% endif %}">
-                            <span id="usernameSpan" class="focus-input100" data-placeholder="Enter username"></span>
+                        <div class="wrap-input100 validate-input" data-validate="Enter name">
+                            <input class="input100" type="text" name="name">
+                            <span id="passwordSpan" class="focus-input100" data-placeholder="Enter name"></span>
                         </div>
                     </div>
                     <div class="flex-col p-1 m-r-3">
-                        <div class="wrap-input100 validate-input m-b-20" data-validate="Enter password">
-                            <input class="input100" type="password" name="password">
-                            <span id="passwordSpan" class="focus-input100" data-placeholder="Password"></span>
+                        <div class="wrap-input100 validate-input m-b-20" data-validate="Enter email">
+                            <input class="input100" type="text" name="email">
+                            <span id="emailSpan" class="focus-input100" data-placeholder="Enter email"></span>
+                        </div>
+
+                        <div class="wrap-input100 validate-input m-t-15 m-b-40 p-l-10" data-validate="Enter password">
+                            <input class="input100 {% if password %}has-val{% endif %}" type="password" name="password"
+                                   value="{% if password %}{{ password }}{% endif %}">
+                            <span id="passwordSpan" class="focus-input100" data-placeholder="Enter password"></span>
+                        </div>
+                    </div>
+                    <div class="flex-col p-1 m-r-3">
+                        <div class="wrap-input100 validate-input m-b-20" data-validate="Enter username">
+                            <input class="input100" type="text" name="username">
+                            <span id="usernameSpan" class="focus-input100" data-placeholder="Username"></span>
                         </div>
 
                         <div class="wrap-input100 validate-input m-t-15 m-b-40 p-l-10" data-validate="Enter password">

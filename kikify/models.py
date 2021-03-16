@@ -12,12 +12,17 @@ class ResetingPasswordQueue(models.Model):
     email = models.EmailField()
     token = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.user.username
 
 class UserProfileInfo(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     picture = models.ImageField(upload_to='profile_pictures/')
 
     def __unicode__(self):
+        return self.user.username
+
+    def __str__(self):
         return self.user.username
 
 
@@ -29,6 +34,8 @@ class File(models.Model):
     def __unicode__(self):
         return self.file.path
 
+    def __str__(self):
+        return self.name
 
 class Song(models.Model):
     name = models.CharField(blank=False, max_length=255)
@@ -39,6 +46,8 @@ class Song(models.Model):
     def __unicode__(self):
         return self.name
 
+    def __str__(self):
+        return self.name
 
 class Album(models.Model):
     name = models.CharField(blank=False, max_length=255)
@@ -50,6 +59,9 @@ class Album(models.Model):
     def __unicode__(self):
         return self.name
 
+    def __str__(self):
+        return self.name
+
 
 class Artist(models.Model):
     name = models.CharField(blank=False, max_length=255)
@@ -57,6 +69,8 @@ class Artist(models.Model):
     def __unicode__(self):
         return self.name
 
+    def __str__(self):
+        return self.name
 
 class RecordLabel(models.Model):
     name = models.CharField(blank=False, max_length=255)
@@ -64,4 +78,7 @@ class RecordLabel(models.Model):
     picture = models.ImageField(upload_to='profile_pictures/')
 
     def __unicode__(self):
+        return self.name
+
+    def __str__(self):
         return self.name

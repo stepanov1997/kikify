@@ -1,6 +1,6 @@
 <div class="modal fade" id="editArtistModal" tabindex="-1" role="dialog" aria-labelledby="editArtistModalLabel"
      aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <form onsubmit="editArtist(event, '{% url 'editArtist' %}',$('#edit-artist-id').val(), $('#edit-artist-name').val())">
                 <div class="modal-header">
@@ -10,7 +10,6 @@
                     </button>
                 </div>
                 <div class="modal-body">
-
                         <input id="edit-artist-id" type="text" hidden>
                         <div class="form-group">
                             <label for="edit-artist-name" class="col-form-label">Artist:</label>

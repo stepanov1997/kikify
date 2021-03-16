@@ -32,7 +32,7 @@
     position: relative;
 }
 
-.flex-two-rows {
+.flex-rows {
     display: flex;
     flex-direction: row;
     justify-content: center;

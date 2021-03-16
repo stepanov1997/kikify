@@ -35,7 +35,9 @@ def upload_song(infos, user):
         album.artist.add(artist)
     else:
         album = albums[0]
-    album.record_label.add(RecordLabel.objects.filter(user=user).first())
+
+    if not user.is_superuser:
+        album.record_label.add(RecordLabel.objects.filter(user=user).first())
 
     # Creating song
     f = Files(file=open(infos["song"].temporary_file_path(), "rb"))

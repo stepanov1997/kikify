@@ -23,7 +23,7 @@ from ranged_fileresponse import RangedFileResponse
 from requests import Response
 import copy
 
-from kikify.forms import UserForm, UserProfileInfoForm
+from kikify.forms import UserForm, UserProfileInfoForm, RecordLabelForm
 from kikify_django import settings
 from . import song_service
 from .models import Song, Album, RecordLabel, UserProfileInfo, ResetingPasswordQueue, Artist
@@ -81,49 +81,46 @@ def register_user(request):
     return render(request, 'kikify/htmls/register.html', context)
 
 
+@transaction.atomic
 def register_record_label(request):
     registered = False
-
     if request.method == "POST":
         user_form = UserForm(data=request.POST)
-        profile_form = UserProfileInfoForm(data=request.POST)
+        record_label_form = RecordLabelForm(data=request.POST)
 
-        if user_form.is_valid() and profile_form.is_valid():
-            user = user_form.save()
-            user.set_password(user.password)
-            user.save()
+        user = user_form.save()
+        user.set_password(user.password)
+        user.save()
 
-            profile = profile_form.save(commit=False)
-            profile.user = user
+        record_label = record_label_form.save(commit=False)
+        record_label.user = user
 
-            if 'profile_picture' in request.FILES:
-                profile.picture = request.FILES['profile_picture']
+        if 'profile_image' in request.FILES:
+            record_label.picture = request.FILES['profile_image']
 
-            profile.save()
+        record_label.save()
 
-            registered = True
+        registered = True
 
-            return render(request, 'kikify/htmls/login.html', {
-                'successful': True,
-                'message': "You successfully registered, please login.",
-                'post_request': request.method == 'POST'
-            })
-        else:
-            print(user_form.errors, profile_form.errors)
+        return render(request, 'kikify/htmls/login.html', {
+            'successful': True,
+            'message': "You successfully registered, please login.",
+            'post_request': request.method == 'POST'
+        })
 
     else:
-        user_form = UserForm()
-        profile_form = UserProfileInfoForm()
+        user_form = UserForm(data=request.GET)
+        record_label_form = RecordLabelForm(data=request.GET)
 
-    context = {'user_form': user_form,
-               'successful': False,
-               'profile_form': profile_form,
-               'registered': registered,
-               'isUser': False,
-               'post_request': request.method == 'POST'
-               }
+        context = {'user_form': user_form,
+                   'successful': False,
+                   'profile_form': record_label_form,
+                   'registered': registered,
+                   'isUser': False,
+                   'post_request': request.method == 'POST'
+                   }
 
-    return render(request, 'kikify/htmls/register.html', context)
+        return render(request, 'kikify/htmls/register.html', context)
 
 
 def record_label(request):
@@ -184,10 +181,15 @@ def login_user(request):
             types = []
             if UserProfileInfo.objects.filter(user__id=user.id).exists():
                 types.append("USER")
+            elif user.is_superuser:
+                types.append("ADMIN")
             if RecordLabel.objects.filter(user__id=user.id).exists():
                 types.append("RECORD_LABEL")
 
-            if user.is_active and len(types) == 2:
+            if "ADMIN" in types:
+                login(request, user)
+                return HttpResponseRedirect(reverse('home'))
+            elif user.is_active and len(types) == 2:
                 login(request, user)
                 return HttpResponseRedirect(reverse('choose_type'))
             elif user.is_active and len(types) == 1 and types[0] == "USER":
@@ -396,7 +398,11 @@ def home(request):
                 'user_image': None if not picture else str(base64.b64encode(picture), 'utf-8'),
                 'username': user_profile_info.user.username,
                 'about': "About",
-                'isUser': isUser
+                'isUser': isUser,
+                'email': request.user.email,
+                'firstname': request.user.first_name,
+                'secondname': request.user.last_name,
+                'isSuperuser': request.user.is_superuser
             }
             return render(request, 'kikify/htmls/home.html', context)
         elif not isUser and record_label_user and len(record_label_user) > 0 and record_label_user.first():
@@ -413,7 +419,11 @@ def home(request):
                 'username': record_label_user.user.username,
                 'name': record_label_user.name,
                 'about': "About",
-                'isUser': isUser
+                'isUser': isUser,
+                'firstname': request.user.first_name,
+                'secondname': request.user.last_name,
+                'email': request.user.email,
+                'isSuperuser': request.user.is_superuser
             }
             return render(request, 'kikify/htmls/home.html', context)
         else:
@@ -422,18 +432,30 @@ def home(request):
                 context = {
                     'username': users.first().username,
                     'about': "About",
-                    'isUser': isUser
+                    'isUser': isUser,
+                    'email': request.user.email,
+                    'firstname': request.user.first_name,
+                    'secondname': request.user.last_name,
+                    'isSuperuser': request.user.is_superuser
                 }
                 return render(request, 'kikify/htmls/home.html', context)
             else:
                 return render(request, 'kikify/htmls/login.html', {
                     'successful': False,
                     'message': 'Please log in as user.',
-                    'isUser': isUser
+                    'isUser': isUser,
+                    'firstname': request.user.first_name,
+                    'secondname': request.user.last_name,
+                    'email': request.user.email,
+                    'isSuperuser': request.user.is_superuser
                 })
     else:
         return render(request, 'kikify/htmls/login.html', {
-            'isUser': isUser
+            'isUser': isUser,
+            'isSuperuser': request.user.is_superuser,
+            'email': request.user.email,
+            'firstname': request.user.first_name,
+            'secondname': request.user.last_name,
         })
 
 
@@ -444,14 +466,15 @@ def artists(request):
     isRecordLabel = bool(body['isRecordLabel'])
 
     artists_list = Artist.objects.all()
-    if isRecordLabel:
+    if not request.user.is_superuser and isRecordLabel:
         artists_list = Artist.objects.filter(album__record_label__user__id=request.user.id)
     else:
         artists_list = Artist.objects.all()
 
     dictionary = {
         'artists': artists_list,
-        'isUser': not isRecordLabel
+        'isUser': not isRecordLabel,
+        'isSuperuser': request.user.is_superuser
     }
     return render(request, 'kikify/components/artists.html', dictionary)
 
@@ -462,7 +485,7 @@ def albums(request):
     body = json.loads(body_unicode)
     isRecordLabel = bool(body['isRecordLabel'])
 
-    if isRecordLabel:
+    if not request.user.is_superuser and isRecordLabel:
         albums_list = Album.objects.filter(record_label__user__id=request.user.id)
     else:
         albums_list = Album.objects.all()
@@ -480,7 +503,7 @@ def songs(request):
     body = json.loads(body_unicode)
     isRecordLabel = bool(body['isRecordLabel'])
 
-    if isRecordLabel:
+    if not request.user.is_superuser and isRecordLabel:
         song_list = Song.objects.filter(album__record_label__user__id=request.user.id).all()
     else:
         song_list = Song.objects.all()
@@ -499,7 +522,7 @@ def albumsOfArtist(request, artist_id):
     body = json.loads(body_unicode)
     isRecordLabel = bool(body['isRecordLabel'])
 
-    if isRecordLabel:
+    if not request.user.is_superuser and isRecordLabel:
         dictionary = {
             'albums': Album.objects.filter(artist__id=artist_id, record_label__user__id=request.user.id),
             'RecordLabel': RecordLabel.objects.filter(id=artist_id).first(),
@@ -521,7 +544,7 @@ def songsOfAlbum(request, artist_id, album_id):
     body = json.loads(body_unicode)
     isRecordLabel = bool(body['isRecordLabel'])
 
-    if isRecordLabel:
+    if (not request.user.is_superuser) and isRecordLabel:
         dictionary = {
             'songs': Song.objects.filter(album__id=album_id, album__record_label__user=request.user),
             'RecordLabel': RecordLabel.objects.filter(id=artist_id),
@@ -537,6 +560,7 @@ def songsOfAlbum(request, artist_id, album_id):
         }
 
     return render(request, 'kikify/components/songs.html', dictionary)
+
 
 @login_required
 def get_music_info(request):
@@ -555,6 +579,7 @@ def get_music_info(request):
     parsed_tags = parse_tags(tags=tag, file_name=mp3file.name, url=url, file=mp3file)
     json_response = json.dumps(parsed_tags)
     return HttpResponse(content=json_response, content_type='application/json')
+
 
 @login_required
 def upload_song(request):
@@ -678,13 +703,16 @@ def editSong(request):
 
             edit_album = albums.first()
         else:
-            record_label = RecordLabel.objects.filter(user__id=request.user.id).first()
+            record_label = None
+            if not request.user.is_superuser:
+                record_label = RecordLabel.objects.filter(user__id=request.user.id).first()
             new_album = copy.copy(old_album)
             new_album.id = None
             new_album.name = album
             new_album.save()
 
-            record_label.album_set.add(new_album)
+            if not request.user.is_superuser:
+                record_label.album_set.add(new_album)
             song.album = new_album
             song.save()
 
@@ -694,7 +722,7 @@ def editSong(request):
         new_album_artist = Artist.objects.filter(album__id=edit_album.id)
         new_artist = Artist.objects.filter(name=artist)
 
-        #if old_album_artist.exists() and new_album_artist.exists() and old_album_artist.first().id != new_album_artist.first().id:
+        # if old_album_artist.exists() and new_album_artist.exists() and old_album_artist.first().id != new_album_artist.first().id:
         #    old_album_artist
         # Postojao je izvođač novog albuma i novi izvođač
         if old_album_artist.exists() and new_artist.exists():
@@ -738,7 +766,7 @@ def editSong(request):
             'name': name,
             'album': album,
             'artist': artist,
-            'show':show
+            'show': show
         }), content_type='application/json')
 
 
@@ -773,8 +801,7 @@ def editAlbum(request):
     if request.method == 'POST':
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
-        id, name, artist = int(body["id"]), body["name"], body["artist"]
-
+        id, name, artist, image_art = int(body["id"]), body["name"], body["artist"], body["imageArt"]
 
         show = 'song'
         edit_album = None
@@ -825,6 +852,9 @@ def editAlbum(request):
             edit_artist.save()
             edit_artist.album_set.add(edit_album)
             show = 'artist'
+
+        edit_album.picture = bytearray(image_art, 'utf8')
+        edit_album.save()
 
         return HttpResponse(status=200, content=json.dumps({
             'id': id,
@@ -878,3 +908,53 @@ def editArtist(request):
             'name': name,
             'show': 'artist'
         }), content_type='application/json')
+
+
+@login_required
+@transaction.atomic
+def editProfile(request):
+    if request.method == 'POST':
+        firstname, secondname, username, email, password, image = request.POST["firstName"], request.POST["secondName"], request.POST[
+            "username"], request.POST["email"], request.POST['password'], request.FILES['profilePicture']
+
+        user = request.user
+        if user.check_password(password):
+            user.first_name, user.last_name, user.username, user.email = firstname, secondname, username, email
+            user.save()
+
+            user_profile_info = UserProfileInfo.objects.filter(user=user)
+            if user_profile_info.exists():
+                user_profile_info.first().picture = image
+                user_profile_info.first().save()
+            record_label = RecordLabel.objects.filter(user=user)
+            if record_label.exists():
+                record_label.first().picture = image.read()
+                record_label.first().save()
+        return HttpResponse(status=200, content=json.dumps({
+            'firstname': firstname,
+            'secondname': secondname,
+            'username': username,
+            'email': email
+        }))
+    else:
+        return HttpResponse(status=204)
+
+
+@login_required
+@transaction.atomic
+def update_password(request):
+    if request.method == 'POST':
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        oldpassword, newpassword1, newpassword2 = body["oldpassword"], body["newpassword1"], body["newpassword2"]
+
+        user = request.user
+        if user.check_password(oldpassword) and newpassword1 == newpassword2:
+            user.set_password(newpassword1)
+            user.save()
+            return HttpResponse(status=200)
+        else:
+            return HttpResponse(status=204)
+
+    else:
+        return HttpResponse(status=204)

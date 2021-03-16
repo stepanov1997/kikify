@@ -151,7 +151,7 @@ function sortSongs(key) {
             switch (currentUnit) {
                 case "artist": {
                     sorted = Array.from(artistContainer.children).sort((a, b) => {
-                        const getYear = elem => parseInt(elem => JSON.parse(elem.getElementsByClassName("artistJSON")[0].innerHTML).year)
+                        const getYear = elem => parseInt(JSON.parse(elem.getElementsByClassName("artistJSON")[0].innerHTML).year)
                         return getYear(a) - getYear(b)
                     })
                     artistContainer.innerHTML = ""
@@ -162,7 +162,7 @@ function sortSongs(key) {
                     break;
                 case "album": {
                     sorted = Array.from(albumContainer.children).sort((a, b) => {
-                        const getYear = elem => parseInt(elem => JSON.parse(elem.getElementsByClassName("albumJSON")[0].innerHTML).year)
+                        const getYear = elem => parseInt(JSON.parse(elem.getElementsByClassName("albumJSON")[0].innerHTML).year)
                         return getYear(a) - getYear(b)
                     })
                     albumContainer.innerHTML = ""
@@ -173,7 +173,7 @@ function sortSongs(key) {
                     break;
                 case "song": {
                     sorted = Array.from(songsContainer.children).sort((a, b) => {
-                        const getYear = elem => parseInt(elem => JSON.parse(elem.getElementsByClassName("songJSON")[0].innerHTML).year)
+                        const getYear = elem => parseInt(JSON.parse(elem.getElementsByClassName("songJSON")[0].innerHTML).year)
                         return getYear(a) - getYear(b)
                     })
                     songsContainer.innerHTML = ""
@@ -292,11 +292,21 @@ $(document).ready(() => {
         const artistId = $(e.relatedTarget).data('content')
         await populateEditForm(artistId);
     });
+    $('#editProfileModal').on('show.bs.modal', async e => {
+        const url = $(e.relatedTarget).data('content')
+        await populateProfileEditForm(url);
+    });
+    $('#changePasswordModal').on('show.bs.modal', async e => {
+        const url = $(e.relatedTarget).data('content')
+        // await populateChangePasswordForm(url);
+    });
+
 })
 
 async function populateEditForm(id) {
     const div = document.getElementById(id)
     const unit = states[states.length - 1].unit
+
     const jsonInput = div.getElementsByClassName(`${unit}JSON`)[0].innerHTML
     const infos = JSON.parse(jsonInput)
     switch (unit) {
@@ -308,9 +318,11 @@ async function populateEditForm(id) {
         }
             break;
         case 'album': {
+            const imageSrc = div.getElementsByClassName("album-art")[0].src
             document.getElementById("edit-album-id").value = infos.id
             document.getElementById("edit-album-name").value = infos.name
             document.getElementById("edit-album-artist").value = infos.artist
+            document.getElementById("imageResultModal").src = imageSrc
         }
             break;
         case 'artist': {
@@ -324,4 +336,92 @@ async function populateEditForm(id) {
     }
 }
 
+async function populateProfileEditForm() {
+    const sidebar = document.getElementsByClassName("sidebar")[0]
+    const image = sidebar.getElementsByClassName("album-art")[0]
+    document.getElementById("imageResultProfileModal").src = image.src
+    document.getElementById("edit-first-name").value = profile.firstname
+    document.getElementById("edit-second-name").value = profile.secondname
+    document.getElementById("edit-username").value = profile.username
+    document.getElementById("edit-email").value = profile.email
+}
 
+async function editProfile(event, url, firstName, secondName, username, email, password, image) {
+    event.preventDefault()
+    if (confirm(`Are you sure you want to edit profile "${username}"?`)) {
+        const csrftoken = getCookie('csrftoken');
+        try {
+            const postReqBody = {
+                    firstName: firstName,
+                    secondName: secondName,
+                    username: username,
+                    email: email,
+                    password: password
+            }
+            var formData = new FormData();
+            for(var obj in postReqBody){
+                formData.append(obj, postReqBody[obj])
+            }
+            formData.append("profilePicture",image.files[0])
+
+            const response = await fetch(url, {
+                headers: {"X-CSRFToken": csrftoken},
+                method: 'POST',
+                body: formData
+            })
+            if (response.status === 204)
+                alert("Entered password is not ok.")
+            else if (response.status === 200) {
+                let data = await response.json()
+                if (!data) {
+                    alert("Profile cannot be edited")
+                    return;
+                }
+                alert("Profile is successfully edited. 😀")
+                $('#editSongModal').modal('hide');
+                location.reload()
+
+            } else
+                alert("Profile cannot be edited")
+        } catch (e) {
+            alert("Profile cannot be edited")
+        }
+    } else {
+        alert("Ok.")
+    }
+}
+
+async function updatePassword(event, url, oldPassword, newPassword1, newPassword2) {
+    event.preventDefault()
+    if (confirm(`Are you sure you want to change password of profile "${profile.username}"?`)) {
+        const csrftoken = getCookie('csrftoken');
+        try {
+            if(newPassword1!==newPassword2){
+                alert("New passwords should be the same.")
+                return;
+            }
+            const response = await fetch(url, {
+                headers: {"X-CSRFToken": csrftoken},
+                method: 'POST',
+                body: JSON.stringify({
+                    oldpassword: oldPassword,
+                    newpassword1: newPassword1,
+                    newpassword2: newPassword2
+                })
+            })
+            if (response.status === 204)
+                alert("Entered password is not ok.")
+            else if (response.status === 200) {
+                alert("Password is successfully changed. 😀")
+                $('#editSongModal').modal('hide');
+                location.reload()
+
+            } else
+                alert("Password cannot be changed")
+        } catch (e) {
+            alert("Password cannot be changed")
+        }
+    } else {
+        alert("Ok.")
+    }
+}

@@ -1,6 +1,6 @@
 <div class="modal fade" id="editSongModal" tabindex="-1" role="dialog" aria-labelledby="editSongModalLabel"
      aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <form onsubmit="editSong(event, '{% url 'editSong' %}',$('#edit-song-id').val(), $('#edit-song-title').val(),$('#edit-song-album').val(),$('#edit-song-artist').val())">
                 <div class="modal-header">

@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from kikify.models import UserProfileInfo
+from kikify.models import UserProfileInfo, RecordLabel
 
 
 class UserForm(forms.ModelForm):
@@ -15,9 +15,16 @@ class UserForm(forms.ModelForm):
 
 class UserProfileInfoForm(forms.ModelForm):
     picture = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class': 'form-control'}))
-    CHOICES = (('Classic', 'Classic'), ('Artist', 'Artist'),)
-    user_type = forms.ChoiceField(choices=CHOICES, required=False)
 
     class Meta:
         model = UserProfileInfo
+        exclude = ('user',)
+
+
+class RecordLabelForm(forms.ModelForm):
+    picture = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class': 'form-control'}))
+    name = forms.CharField(required=True)
+
+    class Meta:
+        model = RecordLabel
         exclude = ('user',)

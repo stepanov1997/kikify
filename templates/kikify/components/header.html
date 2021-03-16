@@ -5,26 +5,29 @@
                 <i class="fas fa-bars"></i>
             </button>
             <div class="px-2"></div>
-            <h2>KIKIFY ({% if isUser %}User{% else %}Record label{% endif %})</h2>
+            <h2>KIKIFY ({% if isUser %}User{% elif isSuperuser %}Admin{% else %}Record label{% endif %})</h2>
             <button class="hamburger navbar-toggler" type="button" data-toggle="collapse"
-                    data-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    data-target="#header"
+                    aria-controls="header" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="fas fa-bars"></i>
             </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="collapse navbar-collapse" id="header">
                 <ul class="list navbar-nav ml-auto mt-2 mt-lg-0">
                     <li class="nav-item active">
                         <a class="nav-link" href="#"><i class="fas fa-home"></i> Home <span
                                 class="sr-only">(current)</span></a>
                     </li>
                     <li class="mobile nav-item">
-                        <a href="javascript:openArtists('{% url 'artists' %}', {% if isUser %}false{% else %}true{% endif %})" class="nav-link">Artists</a>
+                        <a href="javascript:openArtists('{% url 'artists' %}', {% if isUser %}false{% else %}true{% endif %})"
+                           class="nav-link">Artists</a>
                     </li>
                     <li class="mobile nav-item">
-                        <a href="javascript:openAlbums('{% url 'albums' %}', {% if isUser %}false{% else %}true{% endif %})" class="nav-link">Albums</a>
+                        <a href="javascript:openAlbums('{% url 'albums' %}', {% if isUser %}false{% else %}true{% endif %})"
+                           class="nav-link">Albums</a>
                     </li>
                     <li class="mobile nav-item">
-                        <a href="javascript:openSongs('{% url 'songs' %}', {% if isUser %}false{% else %}true{% endif %})" class="nav-link">Songs</a>
+                        <a href="javascript:openSongs('{% url 'songs' %}', {% if isUser %}false{% else %}true{% endif %})"
+                           class="nav-link">Songs</a>
                     </li>
                     <li class="nav-item dropdown px-2">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -32,8 +35,11 @@
                             <i class="fas fa-user-cog"></i> Preferences
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="#"><i class="fas fa-key"></i> Change password</a>
-                            <a class="dropdown-item" href="#"><i class="fas fa-address-card"></i> Edit profile</a>
+                            <a data-toggle="modal" data-target="#changePasswordModal"
+                               data-content="{% url 'change_password' %}" class="dropdown-item" href="#"><i
+                                    class="fas fa-key"></i> Change password</a>
+                            <a data-toggle="modal" data-target="#editProfileModal" data-content="" class="dropdown-item"
+                               href="#"><i class="fas fa-address-card"></i> Edit profile</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#">Something else here</a>
                         </div>

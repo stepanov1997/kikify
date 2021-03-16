@@ -8,6 +8,7 @@
     <script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>
     {% include "kikify/htmls/imports.html" %}
     <script>
+        const profile = { firstname: "{{ firstname }}", secondname: "{{ secondname }}", username: "{{ username }}", email: "{{ email }}" }
         loadPage("{% url 'artists' %}", {% if isUser %}true{% else %}false{% endif %})
     </script>
 
@@ -15,7 +16,7 @@
 <body>
 
 <div class="header">
-    {% include "kikify/components/header.html" with type=type isUser=isUser %}
+    {% include "kikify/components/header.html" with type=type isUser=isUser isSuperuser=isSuperuser %}
 </div>
 
 <div class="d-flex" id="wrapper">

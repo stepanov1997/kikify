@@ -77,7 +77,7 @@ async function deleteAlbum(url, name, albumId) {
     }
 }
 
-async function editAlbum(event, url, id, name, artist) {
+async function editAlbum(event, url, id, name, artist, imageaArt) {
     event.preventDefault()
     if (confirm(`Are you sure you want to edit album "${name}"?`)) {
         const csrftoken = getCookie('csrftoken');
@@ -88,7 +88,8 @@ async function editAlbum(event, url, id, name, artist) {
                 body: JSON.stringify({
                     id: id,
                     name: name,
-                    artist: artist
+                    artist: artist,
+                    imageArt: imageaArt.src.split(",")[1]
                 })
             })
             if (response.status === 204)

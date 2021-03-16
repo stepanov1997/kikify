@@ -10,7 +10,7 @@
                      style="justify-content: center">
                     <input id="upload" type="file" name="profile_image"
                            onchange="readSong(event, '{% url 'get_music_info' %}')"
-                           class="form-control border-0" style="display: none" hidden>
+                           class="form-control border-0" style="display: none">
                     <label id="upload-label" for="upload" class="font-weight-light text-muted"
                            style="display: none"></label>
                     <div class="input-group-append">
@@ -57,7 +57,7 @@
                 <div class="input-group mb-3 px-2 py-0 rounded-pill bg-white shadow-sm"
                      style="justify-content: center">
                     <input id="upload-art" type="file" name="profile_image"
-                           onchange="readURLAlbumArt(event);"
+                           onchange="readURLAlbumArt(event, 'imageResult');"
                            class="form-control border-0" style="display: none">
                     <div class="input-group-append">
                         <label for="upload-art" class="btn btn-light m-0 rounded-pill px-4"> <i

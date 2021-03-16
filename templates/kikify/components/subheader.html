@@ -2,8 +2,8 @@
     <div class="poput-form">
         <nav class="hd navbar navbar-expand-lg navbar-light bg-light border-bottom">
             <button class="hamburger navbar-toggler" type="button" data-toggle="collapse"
-                    data-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    data-target="#subheader"
+                    aria-controls="subheader" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="fas fa-bars"></i>
             </button>
             <div>
@@ -11,9 +11,9 @@
                         class="fas fa-arrow-circle-left"></i> Back</a>
             </div>
             {% if isUser %}
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <div class="collapse navbar-collapse" id="subheader">
                     <ul class="list navbar-nav ml-auto mt-2 mt-lg-0">
-                        <li class="nav-item dropdown ml-auto" style="width: initial">
+                        <li class="nav-item dropdown" style="width: initial">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-sort-amount-down-alt"></i> Sort by
@@ -45,9 +45,9 @@
                     </ul>
                 </div>
             {% else %}
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <div class="collapse navbar-collapse" id="subheader">
                     <ul class="list navbar-nav ml-auto mt-2 mt-lg-0">
-                        <li class="nav-item dropdown ml-auto" style="width: initial">
+                        <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-cloud-upload-alt"></i> Upload new...
@@ -59,7 +59,7 @@
                                         class="fas fa-record-vinyl"></i> Album</a>
                             </div>
                         </li>
-                        <li class="nav-item dropdown ml-auto" style="width: initial">
+                        <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-sort-amount-down-alt"></i> Sort by
@@ -77,7 +77,7 @@
                         </li>
                         <div class="px-2"></div>
 
-                        <div class="input-group mr-auto md-form form-sm form-2 pl-0" style="width: initial">
+                        <div class="input-group m-auto md-form form-sm form-2 pl-0" style="width: initial">
                             <input id="searchBar" class="form-control my-0 py-1 lime-border" type="text"
                                    onkeyup="search_input(event)" placeholder="Search"
                                    aria-label="Search">
@@ -92,6 +92,8 @@
                 </div>
             {% endif %}
         </nav>
+        {% include 'kikify/components/edit_profile_modal.html' %}
+        {% include 'kikify/components/change_password_modal.html' %}
         {% if not isUser %}
             {% include 'kikify/components/upload_form.html' %}
             {% include 'kikify/components/edit_song_modal.html' %}
