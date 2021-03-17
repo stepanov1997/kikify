@@ -1,1 +1,1 @@
-web: guricorn kikify_django.wsgi --log-file -
+web: guricorn kikify.wsgi --log-file -
