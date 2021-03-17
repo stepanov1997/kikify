@@ -55,7 +55,8 @@
                             <div id="sort_a" class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item open-button" href="javascript:openForm()"><i
                                         class="fas fa-music"></i> Song</a>
-                                <a class="dropdown-item" href="javascript:sortSongs('album')"><i
+                                <a data-toggle="modal" data-target="#uploadAlbumModal"
+                               data-content="{% url 'upload_album' %}" class="dropdown-item" href="#"><i
                                         class="fas fa-record-vinyl"></i> Album</a>
                             </div>
                         </li>
@@ -92,10 +93,11 @@
                 </div>
             {% endif %}
         </nav>
-        {% include 'kikify/components/edit_profile_modal.html' %}
+        {% include 'kikify/components/edit_profile_modal.html' with isUser=isUser %}
         {% include 'kikify/components/change_password_modal.html' %}
+        {% include 'kikify/components/upload_album_modal.html' %}
         {% if not isUser %}
-            {% include 'kikify/components/upload_form.html' %}
+            {% include 'kikify/components/upload_song_form.html' %}
             {% include 'kikify/components/edit_song_modal.html' %}
             {% include 'kikify/components/edit_album_modal.html' %}
             {% include 'kikify/components/edit_artist_modal.html' %}

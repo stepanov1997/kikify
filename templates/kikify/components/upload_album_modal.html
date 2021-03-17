@@ -1,0 +1,67 @@
+<div class="modal fade" id="uploadAlbumModal" tabindex="-1" role="dialog" aria-labelledby="uploadAlbumModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form onsubmit="uploadAlbum(event, '{% url 'upload_album' %}',$('#edit-album-id').val(), $('#edit-album-name').val(),$('#edit-album-artist').val(), $('#imageResultModal')[0])">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="uploadAlbumModalLabel">Upload album form</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input id="edit-album-id" type="text" hidden>
+                    <div class="form-group">
+                        <label for="uploadModal">Upload album songs:</label>
+                        <!-- Upload image input-->
+                        <div class="input-group mb-3 px-2 py-0 rounded-pill bg-white shadow-sm"
+                             style="justify-content: center">
+                            <input id="uploadModal" type="file" name="file[]" multiple onchange="readAlbum(event)"
+                                   class="form-control border-0" style="display: none">
+                            <label id="upload-label" for="uploadModal" class="font-weight-light text-muted"
+                                   style="display: none"></label>
+                            <div class="input-group-append">
+                                <label for="uploadModal" class="btn btn-light m-0 rounded-pill px-4"> <i
+                                        class="fa fa-cloud-upload mr-2 text-muted"></i><small
+                                        class="text-uppercase font-weight-bold text-muted">Choose album
+                                    songs</small></label>
+                            </div>
+                        </div>
+
+                        <!-- Uploaded image area-->
+                        <div class="image-area mt-1">
+                            <img id="imageResultModal" src="#" alt=""
+                                 class="img-fluid rounded shadow-sm mx-auto d-block w-30">
+                        </div>
+
+                    </div>
+
+                    <div id="songs-for-upload" class="form-group table-responsive">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-album-name" class="col-form-label">Album:</label>
+                        <input type="text" class="form-control" id="edit-album-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-album-artist" class="col-form-label">Artist:</label>
+                        <input type="text" class="form-control" id="edit-album-artist">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-album-artist" class="col-form-label">Album art:</label>
+                        <div class="image-area mt-1">
+                            <img id="edit-album-art" src="#" alt=""
+                                 class="img-fluid rounded shadow-sm mx-auto d-block w-30">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Upload album</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

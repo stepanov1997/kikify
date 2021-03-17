@@ -964,3 +964,8 @@ def update_password(request):
 
     else:
         return HttpResponse(status=204)
+
+@login_required
+@transaction.atomic
+def upload_album(request):
+    pass

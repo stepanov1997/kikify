@@ -37,8 +37,16 @@
     margin-bottom: 200px !important;
 }
 
+.modal-content {
+    width: unset !important;
+}
 
 @media only screen and (max-width: 900px) {
-
+    table {
+        overflow: scroll;
+    }
+    .modal-content {
+        width: 100% !important;
+    }
 }
 

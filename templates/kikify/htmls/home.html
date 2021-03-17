@@ -9,6 +9,7 @@
     {% include "kikify/htmls/imports.html" %}
     <script>
         const profile = { firstname: "{{ firstname }}", secondname: "{{ secondname }}", username: "{{ username }}", email: "{{ email }}" }
+        const urls = { music_info_url: "{% url 'get_music_info' %}"}
         loadPage("{% url 'artists' %}", {% if isUser %}true{% else %}false{% endif %})
     </script>
 

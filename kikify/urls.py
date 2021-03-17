@@ -27,6 +27,7 @@ urlpatterns = [
     path('songs', songs, name="songs"),
     path('get_music_info', get_music_info, name="get_music_info"),
     path('upload_song', upload_song, name="upload_song"),
+    path('upload_album', upload_album, name="upload_album"),
     path('artist/<int:artist_id>/albums', albumsOfArtist, name="albumsOfArtist"),
     path('artist/<int:artist_id>/album/<int:album_id>/songs', songsOfAlbum, name="songsOfAlbum"),
 ]

@@ -2,7 +2,7 @@
      aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <form onsubmit="editProfile(event, '{% url 'editProfile' %}',$('#edit-first-name').val(), $('#edit-second-name').val(),$('#edit-username').val(), $('#edit-email').val(), $('#edit-password').val(), $('#uploadProfileModal')[0])">
+            <form onsubmit="editProfile(event, '{% url 'editProfile' %}',$('#edit-first-name').val(), $('#edit-second-name').val(),$('#edit-username').val(), $('#edit-email').val(), $('#edit-password').val(), $('#uploadProfileModal')[0], '{{ isUser }}')">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editProfileModalLabel">Edit profile information</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">

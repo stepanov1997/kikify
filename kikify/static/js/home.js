@@ -278,8 +278,38 @@ async function back() {
     }
 }
 
+function _readFileDataUrl(input, callback) {
+    const len = input.files.length, _files = [], res = [];
+    const readFile = function (filePos) {
+        if (!filePos) {
+            callback(false, res);
+        } else {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                res.push({id: res.length, file: filePos, base64: e.target.result});
+                readFile(_files.shift());
+            };
+            reader.readAsDataURL(filePos);
+        }
+    };
+    for (let x = 0; x < len; x++) {
+        _files.push(input.files[x]);
+    }
+    readFile(_files.shift());
+}
+
+let files_for_upload = [];
 
 $(document).ready(() => {
+    $('#uploadModal').on('change', function () {
+        _readFileDataUrl(this, async function (err, files) {
+            if (err) {
+                return
+            }
+            files_for_upload = files
+            await populateUploadAlbumForm(files)
+        });
+    });
     $('#editSongModal').on('show.bs.modal', async e => {
         const songid = $(e.relatedTarget).data('content')
         await populateEditForm(songid);
@@ -352,18 +382,18 @@ async function editProfile(event, url, firstName, secondName, username, email, p
         const csrftoken = getCookie('csrftoken');
         try {
             const postReqBody = {
-                    firstName: firstName,
-                    secondName: secondName,
-                    username: username,
-                    email: email,
-                    password: password,
-                    isUser: isUser
+                firstName: firstName,
+                secondName: secondName,
+                username: username,
+                email: email,
+                password: password,
+                isUser: isUser
             }
             var formData = new FormData();
-            for(var obj in postReqBody){
+            for (var obj in postReqBody) {
                 formData.append(obj, postReqBody[obj])
             }
-            formData.append("profilePicture",image.files[0])
+            formData.append("profilePicture", image.files[0])
 
             const response = await fetch(url, {
                 headers: {"X-CSRFToken": csrftoken},
@@ -397,7 +427,7 @@ async function updatePassword(event, url, oldPassword, newPassword1, newPassword
     if (confirm(`Are you sure you want to change password of profile "${profile.username}"?`)) {
         const csrftoken = getCookie('csrftoken');
         try {
-            if(newPassword1!==newPassword2){
+            if (newPassword1 !== newPassword2) {
                 alert("New passwords should be the same.")
                 return;
             }
@@ -425,4 +455,115 @@ async function updatePassword(event, url, oldPassword, newPassword1, newPassword
     } else {
         alert("Ok.")
     }
+}
+
+async function populateUploadAlbumForm(files) {
+    const table = `
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Song name</th>
+                <th>Player</th>
+                <th>Size</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${files.map((file, i) => `
+            <tr id="song-upload-${file.id}">
+                <td>${file.file.name}</td>
+                <td><audio src="${file.base64}" controls></audio></td>
+                <td>${(file.file.size / 1024 / 1024).toFixed(1)} MB</td>
+                <td><button type="button" onclick="return removeSongForUploading(event, 'song-upload-${file.id}', ${file.id})">Delete</button></td>
+            </tr>
+            `).reduce((a, b) => a + b, "")}
+        </tbody>
+    </table>`
+
+    $("#songs-for-upload").html(table)
+
+    const csrftoken = getCookie('csrftoken');
+    const formdata = new FormData();
+    formdata.append("file", files[0].file, files[0].file.name)
+
+    const response = await fetch(urls.music_info_url, {
+        method: 'POST',
+        headers: {"X-CSRFToken": csrftoken},
+        body: formdata
+    })
+
+    if (response.status === 200) {
+        let data = await response.json();
+        console.log({data: data})
+
+        $('#edit-album-name').val(data.album)
+        $('#edit-album-artist').val(data.artist)
+        $('#edit-album-art').attr('src', `data:image/png;base64, ${data.picture}`)
+    }
+}
+
+function removeSongForUploading(event, fileName, id) {
+    event.preventDefault()
+    $(`#${fileName}`).remove()
+    files_for_upload = files_for_upload.filter(elem => elem.id !== id)
+    return false
+}
+
+function uploadAlbum(event) {
+    // const alertBox = document.getElementById('alert-box')
+    // const imageBox = document.getElementById('image-box')
+    // const progressBox = document.getElementById('progress-box')
+    // const cancelBox = document.getElementById('cancel-box')
+    // const cancelBtn = document.getElementById('cancel-btn')
+    // $.ajax({
+    //     type: 'POST',
+    //     url: event.target.action,
+    //     enctype: 'multipart/form-data',
+    //     data: fd,
+    //     beforeSend: function () {
+    //         console.log('before')
+    //     },
+    //     xhr: function () {
+    //         const xhr = new window.XMLHttpRequest();
+    //         xhr.upload.addEventListener('progress', e => {
+    //             // console.log(e)
+    //             if (e.lengthComputable) {
+    //                 const percent = e.loaded / e.total * 100
+    //                 console.log(percent)
+    //                 progressBox.innerHTML = `<div class="progress">
+    //                                             <div class="progress-bar" role="progressbar" style="width: ${percent}%" aria-valuenow="${percent}" aria-valuemin="0" aria-valuemax="100"></div>
+    //                                         </div>
+    //                                         <p>${percent.toFixed(1)}%</p>`
+    //             }
+    //
+    //         })
+    //         cancelBtn.addEventListener('click', () => {
+    //             xhr.abort()
+    //             setTimeout(() => {
+    //                 event.target.reset()
+    //                 progressBox.innerHTML = ""
+    //                 alertBox.innerHTML = ""
+    //                 cancelBox.classList.add('not-visible')
+    //             }, 2000)
+    //         })
+    //         return xhr
+    //     },
+    //     success: function (response) {
+    //         console.log(response)
+    //         imageBox.innerHTML = `<img src="${url}" width="300px">`
+    //         alertBox.innerHTML = `<div class="alert alert-success" role="alert">
+    //                                 Successfully uploaded the image below
+    //                             </div>`
+    //         cancelBox.classList.add('not-visible')
+    //     },
+    //     error: function (error) {
+    //         console.log(error)
+    //         alertBox.innerHTML = `<div class="alert alert-danger" role="alert">
+    //                                 Ups... something went wrong
+    //                             </div>`
+    //     },
+    //     cache: false,
+    //     contentType: false,
+    //     processData: false,
+    // })
 }
