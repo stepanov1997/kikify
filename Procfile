@@ -1,1 +1,1 @@
-web:gunicorn kikify.wsgi --log-file -
+web: gunicorn kikify_django.wsgi --log-file -
