@@ -52,6 +52,7 @@ ALLOWED_HOSTS = [
 
 # Application definition
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
@@ -73,6 +74,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -108,11 +110,11 @@ WSGI_APPLICATION = 'kikify_django.wsgi.application'
 
 DATABASES = {
     'default': {
-        'HOST': 'localhost',
-        'NAME': 'kikify',
+        'HOST': 'ec2-54-155-226-153.eu-west-1.compute.amazonaws.com',
+        'NAME': 'd2vkh480bu850d',
         'ENGINE': 'django.db.backends.postgresql',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres'
+        'USER': 'wvffzizspszsid',
+        'PASSWORD': '1b2781da4b4c1f3ea530267bf39866537a9e914ac87fffabcc938d06e62d72e6'
     }
 }
 
