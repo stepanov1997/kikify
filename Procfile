@@ -1,1 +1,1 @@
-web: python manage.py runserver 0.0.0.0:8443
+web: gunicorn kikify.wsgi --log-file -
