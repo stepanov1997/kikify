@@ -1,1 +1,1 @@
-web:python manage.py 0.0.0.0:443
+web:gunicorn kikify.wsgi --log-file -
