@@ -110,11 +110,11 @@ WSGI_APPLICATION = 'kikify_django.wsgi.application'
 
 DATABASES = {
     'default': {
-        'HOST': 'ec2-54-155-226-153.eu-west-1.compute.amazonaws.com',
-        'NAME': 'd2vkh480bu850d',
+        'HOST': 'ec2-99-80-200-225.eu-west-1.compute.amazonaws.com',
+        'NAME': 'd16sa2sumkscjb',
         'ENGINE': 'django.db.backends.postgresql',
-        'USER': 'wvffzizspszsid',
-        'PASSWORD': '1b2781da4b4c1f3ea530267bf39866537a9e914ac87fffabcc938d06e62d72e6'
+        'USER': 'qwcbvuxffhrpch',
+        'PASSWORD': 'b5e87811df9bb80ae66e72287985d6bdb3a42b732265fc5a3cfe8f003c1d9d2c'
     }
 }
 
