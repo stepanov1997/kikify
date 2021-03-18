@@ -14,8 +14,8 @@ function changeMusicSongAlbumArt(url) {
     })
     let song_div = document.getElementById(currentPlayList[0].id)
     currentPlayList[0].album_art = song_div.getElementsByTagName("img")[0].src
-    //song_div.getElementsByTagName("img")[0].src = '/C:/static/icons/song.svg'
-    song_div.getElementsByTagName("img")[0].src = '/C:/static/icons/current-song.gif'
+    //song_div.getElementsByTagName("img")[0].src = '/static/icons/song.svg'
+    song_div.getElementsByTagName("img")[0].src = '/static/icons/current-song.gif'
 }
 
 const playSong = async (url, name, album, artist, isClick) => {
@@ -24,7 +24,7 @@ const playSong = async (url, name, album, artist, isClick) => {
     const playBtn = document.querySelector(".toggle-play");
     playBtn.classList.remove("play");
     playBtn.classList.add("pause");
-    playBtn.setAttribute('src', '/C:/static/icons/pause.svg')
+    playBtn.setAttribute('src', '/static/icons/pause.svg')
 
     const value = parseFloat(document.getElementById('myRange').value)
     let newValue = (value / 101).toFixed(3)
@@ -236,7 +236,7 @@ $(document).ready(function () {
                 audio.currentTime
             );
             if (progressBar.style.width === "100%") {
-                playBtn.setAttribute('src', '/C:/static/icons/play.svg')
+                playBtn.setAttribute('src', '/static/icons/play.svg')
                 await playNextSong()
             }
         }
@@ -251,12 +251,12 @@ $(document).ready(function () {
                 if (audio.paused) {
                     playBtn.classList.remove("play");
                     playBtn.classList.add("pause");
-                    playBtn.setAttribute('src', '/C:/static/icons/pause.svg')
+                    playBtn.setAttribute('src', '/static/icons/pause.svg')
                     audio.play();
                 } else {
                     playBtn.classList.remove("pause");
                     playBtn.classList.add("play");
-                    playBtn.setAttribute('src', '/C:/static/icons/play.svg')
+                    playBtn.setAttribute('src', '/static/icons/play.svg')
                     audio.pause();
                 }
             }
