@@ -8,7 +8,7 @@ from mutagen.mp3 import Open
 from kikify_django import settings
 
 
-def parse_tags(tags, file_name, url, file):
+def parse_tags(tags, file_name, file):
     """
     Parse tag from mp3 file
     :param file_name:

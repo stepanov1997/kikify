@@ -15,6 +15,7 @@ class ResetingPasswordQueue(models.Model):
     def __str__(self):
         return self.user.username
 
+
 class UserProfileInfo(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     picture = models.ImageField(upload_to='profile_pictures/')
@@ -37,6 +38,7 @@ class File(models.Model):
     def __str__(self):
         return self.name
 
+
 class Song(models.Model):
     name = models.CharField(blank=False, max_length=255)
     year_of_production = models.IntegerField(blank=True)
@@ -48,6 +50,7 @@ class Song(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Album(models.Model):
     name = models.CharField(blank=False, max_length=255)
@@ -71,6 +74,7 @@ class Artist(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class RecordLabel(models.Model):
     name = models.CharField(blank=False, max_length=255)

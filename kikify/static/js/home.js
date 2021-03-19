@@ -498,6 +498,7 @@ async function populateUploadAlbumForm(files) {
 
         $('#edit-album-name').val(data.album)
         $('#edit-album-artist').val(data.artist)
+        $('#edit-album-year').val(data.year)
         $('#edit-album-art').attr('src', `data:image/png;base64, ${data.picture}`)
     }
 }
@@ -509,61 +510,71 @@ function removeSongForUploading(event, fileName, id) {
     return false
 }
 
-function uploadAlbum(event) {
-    // const alertBox = document.getElementById('alert-box')
-    // const imageBox = document.getElementById('image-box')
-    // const progressBox = document.getElementById('progress-box')
-    // const cancelBox = document.getElementById('cancel-box')
-    // const cancelBtn = document.getElementById('cancel-btn')
-    // $.ajax({
-    //     type: 'POST',
-    //     url: event.target.action,
-    //     enctype: 'multipart/form-data',
-    //     data: fd,
-    //     beforeSend: function () {
-    //         console.log('before')
-    //     },
-    //     xhr: function () {
-    //         const xhr = new window.XMLHttpRequest();
-    //         xhr.upload.addEventListener('progress', e => {
-    //             // console.log(e)
-    //             if (e.lengthComputable) {
-    //                 const percent = e.loaded / e.total * 100
-    //                 console.log(percent)
-    //                 progressBox.innerHTML = `<div class="progress">
-    //                                             <div class="progress-bar" role="progressbar" style="width: ${percent}%" aria-valuenow="${percent}" aria-valuemin="0" aria-valuemax="100"></div>
-    //                                         </div>
-    //                                         <p>${percent.toFixed(1)}%</p>`
-    //             }
-    //
-    //         })
-    //         cancelBtn.addEventListener('click', () => {
-    //             xhr.abort()
-    //             setTimeout(() => {
-    //                 event.target.reset()
-    //                 progressBox.innerHTML = ""
-    //                 alertBox.innerHTML = ""
-    //                 cancelBox.classList.add('not-visible')
-    //             }, 2000)
-    //         })
-    //         return xhr
-    //     },
-    //     success: function (response) {
-    //         console.log(response)
-    //         imageBox.innerHTML = `<img src="${url}" width="300px">`
-    //         alertBox.innerHTML = `<div class="alert alert-success" role="alert">
-    //                                 Successfully uploaded the image below
-    //                             </div>`
-    //         cancelBox.classList.add('not-visible')
-    //     },
-    //     error: function (error) {
-    //         console.log(error)
-    //         alertBox.innerHTML = `<div class="alert alert-danger" role="alert">
-    //                                 Ups... something went wrong
-    //                             </div>`
-    //     },
-    //     cache: false,
-    //     contentType: false,
-    //     processData: false,
-    // })
+function uploadAlbum(event, url, name, album, artist, year, image) {
+    event.preventDefault()
+    const csrftoken = getCookie('csrftoken');
+
+    console.log('Upload function begins');
+    let pBar = document.getElementsByClassName('progress-bar')[0],
+        formData = new FormData(),
+        xhr = new XMLHttpRequest(),
+        percent = 0;
+
+    formData.append("name", name)
+    formData.append("album", album)
+    formData.append("artist", artist)
+    formData.append("year", year)
+    formData.append("image", image.src.split(", ")[1])
+    for (const file of files_for_upload) {
+        formData.append(`file${file.id}`, file.file)
+    }
+
+    console.log('Form Data created');
+    // Start upload
+    xhr.upload.onloadstart = function () {
+
+    };
+
+    // Track upload progress
+    xhr.upload.onprogress = function (event) {
+        percent = parseInt(event.loaded / event.total * 100);
+        pBar.innerHTML = percent + "%";
+        pBar.style.width = percent + "%";
+        console.log(percent + '% completed');
+        console.log('Uploaded event.loaded of event.total');
+    };
+
+    // Report if ends with an error
+    xhr.upload.onerror = function () {
+        console.log('An error has occurred')
+    };
+
+    // Track completion: Both successful or not
+    xhr.upload.onloadend = function () {
+        console.log('Upload complete with or without error ' + xhr.status);
+    };
+
+    // Track progress: Triggered on successful completion
+    xhr.upload.onload = function () {
+        console.log('Uploading complete');
+    };
+
+    xhr.open("POST", url, true);
+
+    xhr.onreadystatechange = function () {
+        if(this.status === 200 && this.readyState===4){
+            let jsonResponse = JSON.parse(this.response)
+            if(jsonResponse.message==="success"){
+                $('.alert').alert()
+                $('#uploadAlbumModalLabel').modal('hide');
+                location.reload()
+
+            }
+        }
+    }
+
+    // The 'setRequestHeader' function can only be called when xhr is opened.
+    xhr.setRequestHeader('X-CSRFToken', csrftoken);
+
+    xhr.send(formData);
 }

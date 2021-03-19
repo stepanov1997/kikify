@@ -30,6 +30,7 @@ from . import song_service
 from .models import Song, Album, RecordLabel, UserProfileInfo, ResetingPasswordQueue, Artist
 from .mp3_parser import parse_tags
 from zipfile import ZipFile
+from django.contrib.sites.shortcuts import get_current_site
 
 MY_ADDRESS = 'kristijan.stepanov@student.etf.unibl.org'
 PASSWORD = 'cikakiki1997'
@@ -48,7 +49,7 @@ def register_user(request):
         profile_form = UserProfileInfoForm(data=request.POST)
 
         if user_form.is_valid() and profile_form.is_valid():
-            user = user_form.save()
+            user = user_formm.save()
             user.set_password(user.password)
             user.save()
 
@@ -263,6 +264,7 @@ def logout_user(request):
     return HttpResponseRedirect(reverse('home'))
 
 
+@transaction.atomic
 def reset_password(request):
     if request.method == 'POST':
         email = request.POST.get("email")
@@ -293,7 +295,7 @@ def reset_password(request):
                     <p>Hi, {user.username}<br>
                        Someone requested reseting password for this mail.<br><br>
                        If you did it, press link below: 
-                       <a href="{SITE_ROOT}change_password?token={token}">Link for reseting password</a><br>
+                       <a href="{request.scheme}://{request.get_host()}/kikify/change_password?token={token}">Link for reseting password</a><br>
                        Otherwise ignore this email.
                     </p>
                     <p>
@@ -577,7 +579,7 @@ def get_music_info(request):
 
     url = request.build_absolute_uri('/')
 
-    parsed_tags = parse_tags(tags=tag, file_name=mp3file.name, url=url, file=mp3file)
+    parsed_tags = parse_tags(tags=tag, file_name=mp3file.name, file=mp3file)
     json_response = json.dumps(parsed_tags)
     return HttpResponse(content=json_response, content_type='application/json')
 
@@ -965,7 +967,33 @@ def update_password(request):
     else:
         return HttpResponse(status=204)
 
+
 @login_required
 @transaction.atomic
 def upload_album(request):
-    pass
+    global parsed_tags, title
+    album = request.POST["album"]
+    artist = request.POST["artist"]
+    year = request.POST["year"]
+    upload_art = request.POST["image"]
+
+    for key in request.FILES:
+        song = request.FILES[key]
+        mp3file = song
+        tag = None
+        try:
+            tag = EasyID3(mp3file)
+            parsed_tags = parse_tags(tags=tag, file_name=mp3file.name, file=mp3file)
+            title = parsed_tags["song"]
+        except:
+            title = None
+        if not title:
+            title = song.file.name
+        data = {'song': song, 'title': title, 'album': album, 'artist': artist, 'year': year,
+                'upload_art': upload_art}
+
+        song_service.upload_song(data, request.user)
+
+    return HttpResponse(content=json.dumps({"message": "success",
+                                            "data": {'album': album, 'artist': artist, 'year': year}}), status=200,
+                        content_type="application/json")

@@ -39,7 +39,7 @@ const playSong = async (url, name, album, artist, isClick) => {
 
     changeMusicSongAlbumArt(url)
 
-    let text = document.createElement("p");
+    let text = document.createElement("div");
     text.innerHTML = `<i>${artist.toUpperCase()}</i> - <b>${name}</b> (${album}) `
     document.getElementById("song-info").innerHTML = text.outerHTML
 
