@@ -2,7 +2,7 @@
      aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <form onsubmit="uploadAlbum(event, '{% url 'upload_album' %}',$('#edit-album-id').val(), $('#edit-album-name').val(),$('#edit-album-artist').val(), $('#imageResultModal')[0])">
+            <form onsubmit="uploadAlbum(event, '{% url 'upload_album' %}',$('#edit-album-id').val(), $('#edit-album-name').val(),$('#edit-album-artist').val(), $('#edit-album-year').val(), $('#edit-album-art')[0])">
                 <div class="modal-header">
                     <h5 class="modal-title" id="uploadAlbumModalLabel">Upload album form</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -16,7 +16,7 @@
                         <!-- Upload image input-->
                         <div class="input-group mb-3 px-2 py-0 rounded-pill bg-white shadow-sm"
                              style="justify-content: center">
-                            <input id="uploadModal" type="file" name="file[]" multiple onchange="readAlbum(event)"
+                            <input id="uploadModal" type="file" name="file[]" multiple
                                    class="form-control border-0" style="display: none">
                             <label id="upload-label" for="uploadModal" class="font-weight-light text-muted"
                                    style="display: none"></label>
@@ -39,6 +39,11 @@
                     <div id="songs-for-upload" class="form-group table-responsive">
 
                     </div>
+
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: 0;">0%</div>
+                    </div>
+
                     <div class="form-group">
                         <label for="edit-album-name" class="col-form-label">Album:</label>
                         <input type="text" class="form-control" id="edit-album-name">
@@ -46,6 +51,10 @@
                     <div class="form-group">
                         <label for="edit-album-artist" class="col-form-label">Artist:</label>
                         <input type="text" class="form-control" id="edit-album-artist">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-album-year" class="col-form-label">Year:</label>
+                        <input type="number" class="form-control" id="edit-album-year">
                     </div>
 
                     <div class="form-group">
