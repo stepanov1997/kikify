@@ -1,37 +1,45 @@
 async function openArtists(url, isRecordLabel) {
-    const csrftoken = getCookie('csrftoken');
-    const artistsResponse = await fetch(url, {
-        method: 'POST',
-        headers: {"X-CSRFToken": csrftoken},
-        body: JSON.stringify({isRecordLabel:isRecordLabel})
-    })
-    const html = await artistsResponse.text()
-    document.getElementsByClassName("content")[0].innerHTML = html;
+    try {
+        const csrftoken = getCookie('csrftoken');
+        const artistsResponse = await fetch(url, {
+            method: 'POST',
+            headers: {"X-CSRFToken": csrftoken},
+            body: JSON.stringify({isRecordLabel: isRecordLabel})
+        })
+        const html = await artistsResponse.text()
+        document.getElementsByClassName("content")[0].innerHTML = html;
 
-    // set state
-    states.push({
-        url: url,
-        unit: "artist",
-        command: async () => await openArtists(url, isRecordLabel)
-    })
+        // set state
+        states.push({
+            url: url,
+            unit: "artist",
+            command: async () => await openArtists(url, isRecordLabel)
+        })
+    } catch (e) {
+        kikifyAlert("Error", "Cannot open artists.")
+    }
 }
 
 async function openArtist(url, artistId, isRecordLabel) {
-    const csrftoken = getCookie('csrftoken');
-    const artistResponse = await fetch(url, {
-        method: 'POST',
-        headers: {"X-CSRFToken": csrftoken},
-        body: JSON.stringify({isRecordLabel:isRecordLabel})
-    })
-    const artistHtml = await artistResponse.text()
-    document.getElementsByClassName("content")[0].innerHTML = artistHtml
+    try {
+        const csrftoken = getCookie('csrftoken');
+        const artistResponse = await fetch(url, {
+            method: 'POST',
+            headers: {"X-CSRFToken": csrftoken},
+            body: JSON.stringify({isRecordLabel: isRecordLabel})
+        })
+        const artistHtml = await artistResponse.text()
+        document.getElementsByClassName("content")[0].innerHTML = artistHtml
 
-    // set state
-    states.push({
-        url: url,
-        unit: "album",
-        command: async () => await openArtist(url, artistId, isRecordLabel)
-    })
+        // set state
+        states.push({
+            url: url,
+            unit: "album",
+            command: async () => await openArtist(url, artistId, isRecordLabel)
+        })
+    } catch (e) {
+        kikifyAlert("Error", "Cannot open artist.")
+    }
 }
 
 async function deleteArtist(url, name, albumId) {
@@ -44,35 +52,33 @@ async function deleteArtist(url, name, albumId) {
             })
             if (response.status === 204)
                 alert("Artist not found.")
-            else if(response.status === 200)
-            {
+            else if (response.status === 200) {
                 let data = await response.json()
-                if(!data.show) {
-                    alert("Artist cannot be deleted")
+                if (!data.show) {
+                    kikifyAlert("Error", "Artist cannot be deleted.")
                     return;
                 }
                 let poppedStated;
                 let found = false;
-                while (states.length!==0 && !found) {
+                while (states.length !== 0 && !found) {
                     poppedStated = states.pop()
-                    if(poppedStated.unit===data.show){
+                    if (poppedStated.unit === data.show) {
                         found = true;
                     }
                 }
-                if(found){
-                    alert("Artist is successfully deleted. 😀")
+                if (found) {
+                    kikifyAlert("Artist deleted", "Artist is successfully deleted. 😀", "success")
                     await poppedStated.command()
-                }else{
-                    alert("Artist cannot be deleted")
+                } else {
+                    kikifyAlert("Error", "Artist cannot be deleted.")
                 }
-            }
-            else
-                alert("Artist cannot be deleted")
+            } else
+               kikifyAlert("Error", "Artist cannot be deleted.")
         } catch (e) {
-            alert("Artist cannot be deleted")
+            kikifyAlert("Error", "Artist cannot be deleted.")
         }
     } else {
-        alert("Ok.")
+        kikifyAlert("Information", "Ok.", "info")
     }
 }
 
@@ -90,11 +96,11 @@ async function editArtist(event, url, id, name) {
                 })
             })
             if (response.status === 204)
-                alert("Artist not found.")
+                kikifyAlert("Error", "Artist not found.")
             else if (response.status === 200) {
                 let data = await response.json()
                 if (!data.show) {
-                    alert("Artist cannot be edited")
+                    kikifyAlert("Error", "Artist not found.")
                     return;
                 }
                 let poppedStated;
@@ -106,18 +112,18 @@ async function editArtist(event, url, id, name) {
                     }
                 }
                 if (found) {
-                    alert("Artist is successfully edited. 😀")
+                    kikifyAlert("Artist edited", "Artist successfully edited.", "success")
                     $('#editAlbumModal').modal('hide');
                     await poppedStated.command()
                 } else {
-                    alert("Artist cannot be edited")
+                    kikifyAlert("Error", "Artist not found.")
                 }
             } else
-                alert("Artist cannot be edited")
+               kikifyAlert("Error", "Artist cannot be edited.")
         } catch (e) {
-            alert("Artist cannot be edited")
+            kikifyAlert("Error", "Artist cannot be edited.")
         }
     } else {
-        alert("Ok.")
+        kikifyAlert("Information", "Ok.", "info")
     }
 }

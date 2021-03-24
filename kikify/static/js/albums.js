@@ -1,38 +1,47 @@
 async function openAlbums(url, isRecordLabel) {
-    const csrftoken = getCookie('csrftoken');
+    try {
+        const csrftoken = getCookie('csrftoken');
 
-    const albumsResponse = await fetch(url, {
-        method: 'POST',
-        headers: {"X-CSRFToken": csrftoken},
-        body: JSON.stringify({isRecordLabel:isRecordLabel})
-    })
-    const albumsHtml = await albumsResponse.text()
-    document.getElementsByClassName("content")[0].innerHTML = albumsHtml
+        const albumsResponse = await fetch(url, {
+            method: 'POST',
+            headers: {"X-CSRFToken": csrftoken},
+            body: JSON.stringify({isRecordLabel: isRecordLabel})
+        })
+        const albumsHtml = await albumsResponse.text()
+        document.getElementsByClassName("content")[0].innerHTML = albumsHtml
 
-    // set state
-    states.push({
-        url: url,
-        unit: "album",
-        command: async () => await openAlbums(url, isRecordLabel)
-    })
+        // set state
+        states.push({
+            url: url,
+            unit: "album",
+            command: async () => await openAlbums(url, isRecordLabel)
+        })
+    } catch (e) {
+        kikifyAlert("Error", "Cannot open albums.")
+    }
 }
 
 async function openAlbum(url, artistId, albumId, isRecordLabel) {
-    const csrftoken = getCookie('csrftoken');
-    const albumResponse = await fetch(url, {
-        method: 'POST',
-        headers: {"X-CSRFToken": csrftoken},
-        body: JSON.stringify({isRecordLabel:isRecordLabel})
-    })
-    const albumHtml = await albumResponse.text()
-    document.getElementsByClassName("content")[0].innerHTML = albumHtml
+    try {
+        const csrftoken = getCookie('csrftoken');
+        const albumResponse = await fetch(url, {
+            method: 'POST',
+            headers: {"X-CSRFToken": csrftoken},
+            body: JSON.stringify({isRecordLabel: isRecordLabel})
+        })
+        const albumHtml = await albumResponse.text()
+        document.getElementsByClassName("content")[0].innerHTML = albumHtml
 
-    // set state
-    states.push({
-        url: url,
-        unit: "song",
-        command: async () => await openAlbum(url, artistId, albumId, isRecordLabel)
-    })
+        // set state
+        states.push({
+            url: url,
+            unit: "song",
+            command: async () => await openAlbum(url, artistId, albumId, isRecordLabel)
+        })
+    } catch (e) {
+        kikifyAlert("Error", "Cannot open album.")
+    }
+
 }
 
 async function deleteAlbum(url, name, albumId) {
@@ -44,36 +53,34 @@ async function deleteAlbum(url, name, albumId) {
                 method: 'POST'
             })
             if (response.status === 204)
-                alert("Album not found.")
-            else if(response.status === 200)
-            {
+                kikifyAlert("Error", "Album not found")
+            else if (response.status === 200) {
                 let data = await response.json()
-                if(!data.show) {
-                    alert("Album cannot be deleted")
+                if (!data.show) {
+                    kikifyAlert("Error", "Album cannot be deleted")
                     return;
                 }
                 let poppedStated;
                 let found = false;
-                while (states.length!==0 && !found) {
+                while (states.length !== 0 && !found) {
                     poppedStated = states.pop()
-                    if(poppedStated.unit===data.show){
+                    if (poppedStated.unit === data.show) {
                         found = true;
                     }
                 }
-                if(found){
-                    alert("Album is successfully deleted. 😀")
+                if (found) {
+                    kikifyAlert("Error", "Album is successfully deleted. 😀")
                     await poppedStated.command()
-                }else{
-                    alert("Album cannot be deleted")
+                } else {
+                    kikifyAlert("Error", "Album cannot be deleted.")
                 }
-            }
-            else
-                alert("Album cannot be deleted")
+            } else
+                kikifyAlert("Error", "Album cannot be deleted.")
         } catch (e) {
-            alert("Album cannot be deleted")
+            kikifyAlert("Error", "Album cannot be deleted.")
         }
     } else {
-        alert("Ok.")
+        kikifyAlert("Information", "Ok.", "info")
     }
 }
 
@@ -93,11 +100,11 @@ async function editAlbum(event, url, id, name, artist, imageaArt) {
                 })
             })
             if (response.status === 204)
-                alert("Album not found.")
+                kikifyAlert("Error", "Album not found.")
             else if (response.status === 200) {
                 let data = await response.json()
                 if (!data.show) {
-                    alert("Album cannot be edited")
+                    kikifyAlert("Error", "Album cannot be edited")
                     return;
                 }
                 let poppedStated;
@@ -109,18 +116,18 @@ async function editAlbum(event, url, id, name, artist, imageaArt) {
                     }
                 }
                 if (found) {
-                    alert("Album is successfully edited. 😀")
+                    kikifyAlert("Successfully edit", "Album is successfully edited. 😀", "success")
                     $('#editAlbumModal').modal('hide');
                     await poppedStated.command()
                 } else {
-                    alert("Album cannot be edited")
+                    kikifyAlert("Error", "Album cannot be edited")
                 }
             } else
-                alert("Album cannot be edited")
+                kikifyAlert("Error", "Album cannot be edited")
         } catch (e) {
-            alert("Album cannot be edited")
+            kikifyAlert("Error", "Album cannot be edited")
         }
     } else {
-        alert("Ok.")
+        kikifyAlert("Information", "Ok", "info")
     }
 }

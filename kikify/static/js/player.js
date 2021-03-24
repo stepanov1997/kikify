@@ -6,9 +6,12 @@ let shuffle = false;
 function changeMusicSongAlbumArt(url) {
     currentPlayList.forEach(elem => {
         if (elem && elem.album_art) {
-            let song_div = document.getElementById(elem.id)
-            if (song_div.getElementsByTagName("img")[0].src !== elem.album_art) {
-                song_div.getElementsByTagName("img")[0].src = elem.album_art;
+            try {
+                let song_div = document.getElementById(elem.id)
+                if (song_div.getElementsByTagName("img")[0].src !== elem.album_art) {
+                    song_div.getElementsByTagName("img")[0].src = elem.album_art;
+                }
+            } catch (e) {
             }
         }
     })
@@ -37,7 +40,10 @@ const playSong = async (url, name, album, artist, isClick) => {
     if (isClick)
         createPlaylistFromSongs(url, shuffle);
 
-    changeMusicSongAlbumArt(url)
+    try {
+        changeMusicSongAlbumArt(url)
+    } catch (e) {
+    }
 
     let text = document.createElement("div");
     text.innerHTML = `<i>${artist.toUpperCase()}</i> - <b>${name}</b> (${album}) `
@@ -55,9 +61,13 @@ const playSong = async (url, name, album, artist, isClick) => {
 const createPlaylistFromSongs = (currentSongUrl, shuffle = false) => {
     currentPlayList.forEach(elem => {
         if (elem && elem.album_art) {
-            let song_div = document.getElementById(elem.id)
-            if (song_div && song_div.getElementsByTagName("img")[0].src !== elem.album_art) {
-                song_div.getElementsByTagName("img")[0].src = elem.album_art;
+            try {
+                let song_div = document.getElementById(elem.id)
+                if (song_div && song_div.getElementsByTagName("img")[0].src !== elem.album_art) {
+                    song_div.getElementsByTagName("img")[0].src = elem.album_art;
+                }
+            } catch (e) {
+
             }
         }
     })

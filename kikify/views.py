@@ -928,14 +928,15 @@ def editProfile(request):
 
             user_profile_info = UserProfileInfo.objects.filter(user=user)
             record_label = RecordLabel.objects.filter(user=user)
-            if isUser and user_profile_info.exists():
-                elem = user_profile_info.first()
-                elem.picture = request.FILES['profilePicture']
-                elem.save()
-            elif not isUser and record_label.exists():
-                elem = record_label.first()
-                elem.picture = request.FILES['profilePicture']
-                elem.save()
+            if 'profilePicture' in request.FILES:
+                if isUser and user_profile_info.exists():
+                    elem = user_profile_info.first()
+                    elem.picture = request.FILES['profilePicture']
+                    elem.save()
+                elif not isUser and record_label.exists():
+                    elem = record_label.first()
+                    elem.picture = request.FILES['profilePicture']
+                    elem.save()
         else:
             return HttpResponse(status=204)
         return HttpResponse(status=200, content=json.dumps({

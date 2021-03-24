@@ -3,6 +3,7 @@ let songs = []
 
 const loadPage = async (url, isUser) => {
     window.onload = function () {
+
         document.getElementById("menu-toggle").addEventListener("click", function (e) {
             e.preventDefault();
             wrapper = document.getElementById("wrapper").classList;
@@ -248,7 +249,7 @@ async function search() {
         case "album": {
             sorted = Array.from(albumContainer.children).filter(elem => {
                 const getJSON = elem1 => JSON.parse(elem1.getElementsByClassName("albumJSON")[0].innerHTML)
-                return JSON.stringify(getJSON(elem)).toLowerCase().includes(searchBar.value).toLowerCase()
+                return JSON.stringify(getJSON(elem)).toLowerCase().includes(searchBar.value.toLowerCase())
             })
             albumContainer.innerHTML = ""
             sorted.forEach(elem => {
@@ -352,7 +353,7 @@ async function populateEditForm(id) {
             document.getElementById("edit-album-id").value = infos.id
             document.getElementById("edit-album-name").value = infos.name
             document.getElementById("edit-album-artist").value = infos.artist
-            document.getElementById("imageResultModal").src = imageSrc
+            document.getElementById("edit-album-art").src = imageSrc
         }
             break;
         case 'artist': {
@@ -390,10 +391,11 @@ async function editProfile(event, url, firstName, secondName, username, email, p
                 isUser: isUser
             }
             var formData = new FormData();
-            for (var obj in postReqBody) {
+            for (const obj in postReqBody) {
                 formData.append(obj, postReqBody[obj])
             }
-            formData.append("profilePicture", image.files[0])
+            if(image.files.length!==0)
+                formData.append("profilePicture", image.files[0])
 
             const response = await fetch(url, {
                 headers: {"X-CSRFToken": csrftoken},
@@ -496,10 +498,10 @@ async function populateUploadAlbumForm(files) {
         let data = await response.json();
         console.log({data: data})
 
-        $('#edit-album-name').val(data.album)
-        $('#edit-album-artist').val(data.artist)
-        $('#edit-album-year').val(data.year)
-        $('#edit-album-art').attr('src', `data:image/png;base64, ${data.picture}`)
+        $('#upload-album-name').val(data.album)
+        $('#upload-album-artist').val(data.artist)
+        $('#upload-album-year').val(data.year)
+        $('#upload-album-art').attr('src', `data:image/png;base64, ${data.picture}`)
     }
 }
 
@@ -562,9 +564,9 @@ function uploadAlbum(event, url, name, album, artist, year, image) {
     xhr.open("POST", url, true);
 
     xhr.onreadystatechange = function () {
-        if(this.status === 200 && this.readyState===4){
+        if (this.status === 200 && this.readyState === 4) {
             let jsonResponse = JSON.parse(this.response)
-            if(jsonResponse.message==="success"){
+            if (jsonResponse.message === "success") {
                 $('.alert').alert()
                 $('#uploadAlbumModalLabel').modal('hide');
                 location.reload()
@@ -577,4 +579,13 @@ function uploadAlbum(event, url, name, album, artist, year, image) {
     xhr.setRequestHeader('X-CSRFToken', csrftoken);
 
     xhr.send(formData);
+}
+
+function kikifyAlert(header, message, type) {
+    // $("#alert-header").text(header)
+    // $("#alert-message").text(message)
+    // if(type)
+    //     $("#alertModal").classList.add(type)
+    // $("#alertModal").show()
+    alert(message)
 }
