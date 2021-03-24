@@ -6,7 +6,7 @@
                 <div class="header-icons">
                     <a href="{% url 'getSongById' song.id %}" download="{{ song.song_in_bytes.file }}"><i
                             class="fas fa-download"></i></a>
-                    {% if not isUser %}
+                    {% if not isUser or isSuperuser %}
                         <a href="javascript:deleteSong(`{% url 'deleteSong' song.id %}`, '{{ song.name }}', '{{ song.id }}')"><i
                                 class="fas fa-trash-alt"></i></a>
                         <a data-toggle="modal" data-target="#editSongModal" data-content="{{ song.id }}"

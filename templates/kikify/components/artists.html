@@ -7,7 +7,7 @@
                     <a href="{% url 'getArtistById' artist.id %}"
                        download="{{ artist.name | add:".zip" | lower }}"><i
                             class="fas fa-download"></i></a>
-                    {% if not isUser %}
+                    {% if not isUser or isSuperuser %}
                         <a href="javascript:deleteArtist(`{% url 'deleteArtist' artist.id %}`, '{{ artist.name }}', '{{ artist.id }}')"><i
                                 class="fas fa-trash-alt"></i></a>
                         <a data-toggle="modal" data-target="#editArtistModal" data-content="{{ artist.id }}" {#href="javascript:editArtist(`{% url 'editArtist' artist.id %}`, '{{ artist.name }}', '{{ artist.id }}')"#}><i class="fas fa-edit"></i></a>

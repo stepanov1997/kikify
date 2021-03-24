@@ -10,7 +10,7 @@
                     <div class="header-icons">
                         <a href="{% url 'getAlbumById' album.id %}" download="{{ artist.name | add:" - " | add:album.name | add:".zip" | lower }}"><i
                                 class="fas fa-download"></i></a>
-                        {% if not isUser %}
+                        {% if not isUser or isSuperuser %}
                             <a href="javascript:deleteAlbum(`{% url 'deleteAlbum' album.id %}`, '{{ album.name }}', '{{ album.id }}')"><i
                                     class="fas fa-trash-alt"></i></a>
                             <a data-toggle="modal" data-target="#editAlbumModal" data-content="{{ album.id }}" {#href="javascript:editAlbum(`{% url 'editAlbum' album.id %}`, '{{ album.name }}', '{{ album.id }}')"#}><i class="fas fa-edit"></i></a>

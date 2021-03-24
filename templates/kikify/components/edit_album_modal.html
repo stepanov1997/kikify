@@ -2,7 +2,7 @@
      aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <form onsubmit="editAlbum(event, '{% url 'editAlbum' %}',$('#edit-album-id').val(), $('#edit-album-name').val(),$('#edit-album-artist').val(), $('#imageResultModal')[0])">
+            <form onsubmit="editAlbum(event, '{% url 'editAlbum' %}',$('#edit-album-id').val(), $('#edit-album-name').val(),$('#edit-album-artist').val(), $('#edit-album-art')[0])">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editAlbumModalLabel">Edit song information</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -23,12 +23,12 @@
                         <!-- Upload image input-->
                         <div class="input-group mb-3 px-2 py-0 rounded-pill bg-white shadow-sm"
                              style="justify-content: center">
-                            <input id="uploadModal" type="file" name="profile_image" onchange="readURLAlbumArt(event, 'imageResultModal')"
+                            <input id="edit-album-modal" type="file" name="profile_image" onchange="readURLAlbumArt(event, 'edit-album-art')"
                                    class="form-control border-0" style="display: none">
-                            <label id="upload-label" for="uploadModal" class="font-weight-light text-muted"
+                            <label id="upload-label" for="edit-album-modal" class="font-weight-light text-muted"
                                    style="display: none"></label>
                             <div class="input-group-append">
-                                <label for="uploadModal" class="btn btn-light m-0 rounded-pill px-4"> <i
+                                <label for="edit-album-modal" class="btn btn-light m-0 rounded-pill px-4"> <i
                                         class="fa fa-cloud-upload mr-2 text-muted"></i><small
                                         class="text-uppercase font-weight-bold text-muted">Choose profile
                                     picture</small></label>
@@ -37,7 +37,7 @@
 
                         <!-- Uploaded image area-->
                         <div class="image-area mt-1">
-                            <img id="imageResultModal" src="#" alt=""
+                            <img id="edit-album-art" src="#" alt=""
                                  class="img-fluid rounded shadow-sm mx-auto d-block w-30">
                         </div>
 
