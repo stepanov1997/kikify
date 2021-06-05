@@ -32,8 +32,8 @@ from .mp3_parser import parse_tags
 from zipfile import ZipFile
 from django.contrib.sites.shortcuts import get_current_site
 
-MY_ADDRESS = 'kristijan.stepanov@student.etf.unibl.org'
-PASSWORD = 'cikakiki1997'
+MY_ADDRESS = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+PASSWORD = 'XXXXXXXXXXXX'
 SITE_ROOT = 'http://localhost:8000/kikify/'
 
 
