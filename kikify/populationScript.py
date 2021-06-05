@@ -194,7 +194,6 @@ for mp3file in mp3gen(PATH):
     else:
         album = albums[0]
 
-    # Creating song
     f = Files(open(mp3file, 'rb'))
 
     files = list(File.objects.filter(file=mp3file))

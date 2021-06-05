@@ -3,7 +3,6 @@ let songs = []
 
 const loadPage = async (url, isUser) => {
     window.onload = function () {
-
         document.getElementById("menu-toggle").addEventListener("click", function (e) {
             e.preventDefault();
             wrapper = document.getElementById("wrapper").classList;
@@ -13,19 +12,8 @@ const loadPage = async (url, isUser) => {
                 wrapper.add("toggled")
         });
     }
-
-    // $("#menu-toggle").click(function (e) {
-    //     e.preventDefault();
-    //     $("#wrapper").toggleClass("toggled");
-    // });
-    if (isUser) {
-        const isRecordLabel = !isUser
-        await openArtists(url, isRecordLabel)
-    } else {
-        const isRecordLabel = !isUser
-        await openArtists(url, isRecordLabel)
-    }
-
+    const isRecordLabel = !isUser
+    await openArtists(url, isRecordLabel)
 }
 
 function sortSongs(key) {
@@ -394,7 +382,7 @@ async function editProfile(event, url, firstName, secondName, username, email, p
             for (const obj in postReqBody) {
                 formData.append(obj, postReqBody[obj])
             }
-            if(image.files.length!==0)
+            if (image.files.length !== 0)
                 formData.append("profilePicture", image.files[0])
 
             const response = await fetch(url, {

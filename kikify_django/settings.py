@@ -14,6 +14,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 
 import mimetypes
+
 mimetypes.add_type("text/css", ".css", True)
 mimetypes.add_type("text/html", ".html", True)
 
@@ -28,7 +29,7 @@ TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates/'),
 SECRET_KEY = 'dnnk=^c@i90@@dd(8vmb=p26gyc35k8l!l--n1xb_k5lurjeu6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 if DEBUG:
     # will output to your console
@@ -45,17 +46,15 @@ else:
         filemode='a'
     )
 
-
 ALLOWED_HOSTS = [
     '*'
 ]
 
 # Application definition
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "kikify/static"),
+    os.path.join(BASE_DIR, "static"),
 )
 
 MEDIA_URL = '/media/'
@@ -74,7 +73,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -84,7 +82,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'kikify_django.urls'
-APPEND_SLASH=False
+APPEND_SLASH = False
 LOGIN_URL = '/kikify/login'
 
 TEMPLATES = [
@@ -110,11 +108,11 @@ WSGI_APPLICATION = 'kikify_django.wsgi.application'
 
 DATABASES = {
     'default': {
-        'HOST': 'ec2-99-80-200-225.eu-west-1.compute.amazonaws.com',
-        'NAME': 'd16sa2sumkscjb',
+        'HOST': 'localhost',
+        'NAME': 'kikify',
         'ENGINE': 'django.db.backends.postgresql',
-        'USER': 'qwcbvuxffhrpch',
-        'PASSWORD': 'b5e87811df9bb80ae66e72287985d6bdb3a42b732265fc5a3cfe8f003c1d9d2c'
+        'USER': 'postgres',
+        'PASSWORD': 'postgres'
     }
 }
 
@@ -136,7 +134,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
@@ -155,6 +152,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# Configure Django App for Heroku.
-import django_heroku
-django_heroku.settings(locals())
+DATA_UPLOAD_MAX_MEMORY_SIZE = 104_857_600

@@ -10,7 +10,7 @@
                     {% if not isUser or isSuperuser %}
                         <a href="javascript:deleteArtist(`{% url 'deleteArtist' artist.id %}`, '{{ artist.name }}', '{{ artist.id }}')"><i
                                 class="fas fa-trash-alt"></i></a>
-                        <a data-toggle="modal" data-target="#editArtistModal" data-content="{{ artist.id }}" {#href="javascript:editArtist(`{% url 'editArtist' artist.id %}`, '{{ artist.name }}', '{{ artist.id }}')"#}><i class="fas fa-edit"></i></a>
+                        <a data-toggle="modal" data-target="#editArtistModal" data-content="{{ artist.id }}"><i class="fas fa-edit"></i></a>
                     {% endif %}
                 </div>
                 <img class="artist-art" src='{% static "artist-512.png" %}'

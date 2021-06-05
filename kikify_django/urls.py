@@ -23,7 +23,7 @@ from kikify.views import *
 from kikify_django import settings
 
 urlpatterns = [
-  path('', home),
+  path('', home, name="ROOT_URL"),
   path('admin/', admin.site.urls),
   path('kikify/', include('kikify.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

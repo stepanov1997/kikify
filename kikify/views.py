@@ -913,6 +913,9 @@ def editArtist(request):
         }), content_type='application/json')
 
 
+size = 32, 32
+
+
 @login_required
 @transaction.atomic
 def editProfile(request):

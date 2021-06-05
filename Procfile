@@ -1,1 +1,0 @@
-web: gunicorn kikify_django.wsgi --log-file -
